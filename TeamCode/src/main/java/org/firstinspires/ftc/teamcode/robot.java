@@ -1,18 +1,86 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
+import androidx.annotation.NonNull;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.Util;
 
-public class robot {
-    public robot(){
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class robot extends MecanumDrive {
+
+
+    public boolean RUN_USING_ENCODER;
+
+
+    DcMotorEx leftBack, leftFront, rightBack, rightFront;
+
+    BNO055IMU imu;
+    Orientation currentAngle;
+
+    LinearOpMode linearOpMode;
+    HardwareMap hardwareMap;
+
+    public final int DIRECTION = 1;
+    final static double TICKS_TO_INCH_FORWARD = 37.87;
+    final static double TICKS_TO_INCH_STRAFE = 70.68;
+    static DcMotor[] encoderMotors;
+
+    public robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
+
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.getAngularOrientation();
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+        currentAngle = imu.getAngularOrientation();
+        this.linearOpMode = linearOpMode;
+        this.hardwareMap = hardwareMap;
+    }
+
+
+    public void resetEncoders(){
+//        for (int i = 0; i < encoderMotors.length; i++){
+//            encoderMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            encoderMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        }
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
     }
 
     public void initOpenCV(HardwareMap hardwareMap) {
