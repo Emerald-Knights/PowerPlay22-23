@@ -8,7 +8,7 @@ public class Auton extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException{
-        robot bot = new robot();
+        Robot bot = new Robot();
         bot.initOpenCV(hardwareMap);
         telemetry.addData("o3", DetectorPipeline.o3);
         telemetry.addData("o3", DetectorPipeline.p1);
