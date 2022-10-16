@@ -54,7 +54,6 @@ public class Robot extends MecanumDrive {
         this.hardwareMap = hardwareMap;
     }
 
-
     public void resetEncoders(){
 //        for (int i = 0; i < encoderMotors.length; i++){
 //            encoderMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -94,5 +93,81 @@ public class Robot extends MecanumDrive {
 
 
         });
+    }
+
+    //auton methods
+    public void resetEncoders(){
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public static double angleWrap(double angle){
+        while(angle>Math.PI){
+            angle-=2*Math.PI;
+        }
+        while(angle<-Math.PI){
+            angle+=2*Math.PI;
+        }
+        return angle;
+    }
+
+    //1 is right -1 is left
+    public void strafe(double direction, double distance, double speed) {
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while(Math.abs(leftFront.getCurrentPosition())*TICKS_TO_INCH_STRAFE < distance){
+            leftBack.setPower(-speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(speed*direction);
+            rightFront.setPower(-speed*direction);
+
+            //    DcMotorEx leftBack, leftFront, rightBack, rightFront;
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+
+    //1 is straight -1 is back
+    public void straight(double direction, double distance, double speed) {
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while(Math.abs(leftFront.getCurrentPosition())*TICKS_TO_INCH_FORWARD < distance){
+            leftBack.setPower(speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(speed*direction);
+            rightFront.setPower(speed*direction);
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    //1 is right, -1 is left
+    public void turnTo(double direction, double targetAngle, double speed) {
+        while(angleWrap(Math.abs(imu.getAngularOrientation().firstAngle - targetAngle)) < 0.03){
+            leftBack.setPower(speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(-speed*direction);
+            rightFront.setPower(-speed*direction);
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
