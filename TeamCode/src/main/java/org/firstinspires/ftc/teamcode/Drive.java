@@ -2,15 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp (name = "AbsolutelySupremeSoftware ", group = "amongus")
 public class Drive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot woofWoof = new robot(hardwareMap, this);
+        Robot woofWoof = new Robot(hardwareMap, this);
         waitForStart();
 
         double lx, rx, ly;

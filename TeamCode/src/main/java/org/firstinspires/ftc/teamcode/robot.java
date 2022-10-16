@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import androidx.annotation.NonNull;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -15,15 +12,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-import com.qualcomm.robotcore.util.Util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class robot extends MecanumDrive {
+public class Robot extends MecanumDrive {
 
 
     public boolean RUN_USING_ENCODER;
@@ -42,7 +32,7 @@ public class robot extends MecanumDrive {
     final static double TICKS_TO_INCH_STRAFE = 70.68;
     static DcMotor[] encoderMotors;
 
-    public robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
+    public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -56,7 +46,6 @@ public class robot extends MecanumDrive {
 
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.getAngularOrientation();
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
@@ -65,13 +54,28 @@ public class robot extends MecanumDrive {
         this.hardwareMap = hardwareMap;
     }
 
-    public void initOpenCV(HardwareMap hardwareMap) {
+    public void resetEncoders(){
+//        for (int i = 0; i < encoderMotors.length; i++){
+//            encoderMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            encoderMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        }
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void initOpenCV() {
         OpenCvWebcam webcam;
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"),
                 cameraMonitorViewId);
-        webcam.setPipeline(new detector());
+        webcam.setPipeline(new DetectorPipeline());
         webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
         OpenCvWebcam finalWebcam = webcam;
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
