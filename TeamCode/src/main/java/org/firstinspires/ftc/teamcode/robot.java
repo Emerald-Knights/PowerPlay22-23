@@ -79,14 +79,14 @@ public class robot extends MecanumDrive {
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
     }
 
     public void initOpenCV(HardwareMap hardwareMap) {
         OpenCvWebcam webcam;
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        int cameraMonitorViewId = hardwareMap.appContext.getResources()
+                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"),
+                cameraMonitorViewId);
         webcam.setPipeline(new detector());
         webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
         OpenCvWebcam finalWebcam = webcam;
@@ -102,6 +102,8 @@ public class robot extends MecanumDrive {
                  * This will be called if the camera could not be opened
                  */
             }
+
+
         });
     }
 }
