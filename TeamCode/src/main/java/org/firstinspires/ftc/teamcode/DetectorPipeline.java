@@ -16,7 +16,8 @@ public class DetectorPipeline extends OpenCvPipeline {
 
     //insert target purple and target green as well
     double[] targetOrange = {220, 160, 120};
-
+    double[] targetPurple = {138, 114, 173};
+    double[] targetGreen = {132, 179, 125};
     double pctColorError = 0.2;
 
 
@@ -34,8 +35,6 @@ public class DetectorPipeline extends OpenCvPipeline {
     //brightness increases the color threshold. If it is not detecting, try increasing brightness.
     int brightness = 0;
 
-    public static double[] pixelColor = {0,0,0,0};
-
     @Override
     public Mat processFrame(Mat input){
         Size imageSize = input.size();
@@ -45,31 +44,23 @@ public class DetectorPipeline extends OpenCvPipeline {
         int purpleCnt = 0;
         Rect crosshair1 = new Rect(new Point(imageSize.width/2 + xDev + scanWidth, (imageSize.height)/2 + yDev - scanHeight), new Point((int)(imageSize.width/2) + xDev - scanWidth, imageSize.height/2 +yDev + scanHeight));
         Imgproc.rectangle(output, crosshair1, new Scalar(4,233,78),3,8);
-        for(int i = (int)(imageSize.height)/2 + yDev - scanHeight; i < imageSize.height/2 +yDev + scanHeight ; i++){
+        for(int i = (int)(imageSize.height)/2 + yDev - scanHeight; i < imageSize.height/2 + yDev + scanHeight ; i++){
             for(int j = (int)(imageSize.width/2) + xDev - scanWidth; j < imageSize.width/2 + xDev + scanWidth; j++)
             {
-                pixelColor = input.get(i,j);
-                //orange
-                if (pixelColor[0] > 210 + brightness){
+                double[] pixelColor = input.get(i,j);
+                if (compareColor(targetOrange, pixelColor)){
                     orangeCnt++;
                     double[] newColor = {250, 0, 0, pixelColor[3]};
                     output.put(i, j, newColor);
                 }
-                //green
-                if (pixelColor[1] > 160 + brightness && pixelColor[0] < 180 + brightness){
+                if (compareColor(targetGreen, pixelColor)){
                     greenCnt++;
                     double[] newColor = {0, 250, 0, pixelColor[3]};
                     output.put(i, j, newColor);
                 }
-                //purple
-                if (pixelColor[2] > 120 + brightness && pixelColor[1] < 130){
+                if (compareColor(targetPurple, pixelColor)){
                     purpleCnt++;
                     double[] newColor = {0, 0, 250, pixelColor[3]};
-                    output.put(i, j, newColor);
-                }
-                //if it is white
-                if (pixelColor[0] > 210 + brightness && pixelColor[1] > 210 + brightness && pixelColor[2] > 210 + brightness){
-                    double[] newColor = {0, 0, 0, pixelColor[3]};
                     output.put(i, j, newColor);
                 }
             }
@@ -84,6 +75,14 @@ public class DetectorPipeline extends OpenCvPipeline {
             sleeveColor = 2;
         }
 
+        return output;
+    }
+
+    private boolean compareColor(double[] targetColor, double[] pixelColor) {
+        boolean output = true;
+        for(int i = 0; i < 3; i++) {
+            output = output && pixelColor[i] < targetColor[i] * (1 + pctColorError) && pixelColor[i] > targetColor[i] * (1 - pctColorError);
+        }
         return output;
     }
 }

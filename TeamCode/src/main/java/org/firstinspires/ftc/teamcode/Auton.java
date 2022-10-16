@@ -8,11 +8,11 @@ public class Auton extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException{
-        Robot bot = new Robot();
-        bot.initOpenCV(hardwareMap);
-        telemetry.addData("o3", DetectorPipeline.o3);
-        telemetry.addData("o3", DetectorPipeline.p1);
-        telemetry.addData("o3", DetectorPipeline.g2);
+        Robot bot = new Robot(hardwareMap, this);
+        bot.initOpenCV();
+//        telemetry.addData("o3", DetectorPipeline.orangeCnt);
+//        telemetry.addData("o3", DetectorPipeline.purpleCnt);
+//        telemetry.addData("o3", DetectorPipeline.greenCnt);
         telemetry.addData("sleeveColor", DetectorPipeline.sleeveColor);
 //        telemetry.addData("c1", detector.pixelColor[0]);
 //        telemetry.addData("c2", detector.pixelColor[1]);
