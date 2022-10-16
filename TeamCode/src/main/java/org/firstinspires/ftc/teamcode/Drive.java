@@ -8,7 +8,7 @@ public class Drive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot woofWoof = new Robot(hardwareMap, this);
+        Robot wucru = new Robot(hardwareMap, this);
         waitForStart();
 
         double lx, rx, ly;
@@ -20,9 +20,9 @@ public class Drive extends LinearOpMode {
             ly = -gamepad1.left_stick_y;
 
 
-            telemetry.addData("heading", woofWoof.imu.getAngularOrientation().firstAngle);
-            telemetry.addData("heading3", woofWoof.imu.getAngularOrientation().thirdAngle);
-            double angle = woofWoof.imu.getAngularOrientation().thirdAngle;
+            telemetry.addData("heading", wucru.imu.getAngularOrientation().firstAngle);
+            telemetry.addData("heading3", wucru.imu.getAngularOrientation().thirdAngle);
+            double angle = wucru.imu.getAngularOrientation().thirdAngle;
             telemetry.update();
 
             // do spinny thing
@@ -31,10 +31,10 @@ public class Drive extends LinearOpMode {
             double lf = Math.sin(angle + Math.PI * 3/4 + direction);
             double rf = Math.sin(angle + Math.PI * 5/4 + direction);
             double turnPower = 1; //turn power can be changed to a magnitude and direction
-           woofWoof.leftFront.setPower(lf + turnPower);
-           woofWoof.leftBack.setPower(rf + turnPower);
-           woofWoof.rightFront.setPower(rf - turnPower);
-           woofWoof.rightBack.setPower(lf - turnPower);
+           wucru.leftFront.setPower(lf + turnPower);
+           wucru.leftBack.setPower(rf + turnPower);
+           wucru.rightFront.setPower(rf - turnPower);
+           wucru.rightBack.setPower(lf - turnPower);
         }
     }
 }

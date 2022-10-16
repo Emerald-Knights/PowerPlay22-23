@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class Robot extends MecanumDrive {
+public class Robot {
 
 
     public boolean RUN_USING_ENCODER;
@@ -52,21 +52,6 @@ public class Robot extends MecanumDrive {
         currentAngle = imu.getAngularOrientation();
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
-    }
-
-    public void resetEncoders(){
-//        for (int i = 0; i < encoderMotors.length; i++){
-//            encoderMotors[i].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            encoderMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        }
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void initOpenCV() {
