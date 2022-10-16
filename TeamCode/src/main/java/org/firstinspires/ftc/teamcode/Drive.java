@@ -2,41 +2,34 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp (name = "AbsolutelySupremeSoftware ", group = "amongus")
 public class Drive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot woofWoof = new robot(hardwareMap, this);
+        robot wucru = new robot(hardwareMap, this);
         waitForStart();
 
-        double lx, rx, ly;
         while (opModeIsActive()) {
+            double lx=gamepad1.left_stick_x;
+            double ly=-gamepad1.left_stick_y;
+            double rx=gamepad1.right_stick_x;
+            double currentAngle = wucru.imu.getAngularOrientation().firstAngle;
 
-            // set the gamepad variables
-            lx = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-            ly = -gamepad1.left_stick_y;
+            double direction = Math.atan2(-ly, lx);
+            double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
+            double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
 
+            double ratio;
+            double max = Math.max(Math.abs(rf), Math.abs(lf));
+            double magnitude = Math.sqrt((lx * lx) + (ly * ly));
+            ratio = (max == 0) ? 0 : magnitude / max * 0.8;
 
-            telemetry.addData("heading", woofWoof.imu.getAngularOrientation().firstAngle);
-            telemetry.addData("heading3", woofWoof.imu.getAngularOrientation().thirdAngle);
-            double angle = woofWoof.imu.getAngularOrientation().thirdAngle;
-            telemetry.update();
-
-            // do spinny thing
-            double direction = Math.PI; //set direction
-            // direction = tan(y/x)
-            double lf = Math.sin(angle + Math.PI * 3/4 + direction);
-            double rf = Math.sin(angle + Math.PI * 5/4 + direction);
-            double turnPower = 1; //turn power can be changed to a magnitude and direction
-           woofWoof.leftFront.setPower(lf + turnPower);
-           woofWoof.leftBack.setPower(rf + turnPower);
-           woofWoof.rightFront.setPower(rf - turnPower);
-           woofWoof.rightBack.setPower(lf - turnPower);
+            wucru.leftFront.setPower((lf+rx)*ratio);
+            wucru.leftBack.setPower((rf+rx)*ratio);
+            wucru.rightFront.setPower((rf-rx)*ratio);
+            wucru.rightBack.setPower((lf-rx)*ratio);
         }
     }
 }
