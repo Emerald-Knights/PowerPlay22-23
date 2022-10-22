@@ -17,19 +17,33 @@ public class Drive extends LinearOpMode {
             double rx=gamepad1.right_stick_x;
             double currentAngle = wucru.imu.getAngularOrientation().firstAngle;
 
-            double direction = Math.atan2(-ly, lx);
+            double direction = Math.atan2(-ly, lx); //set direction
+            // direction = tan(ly/lx)
             double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
             double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
+            double turnPower = rx; //turn power can be changed to a magnitude and direction
 
             double ratio;
             double max = Math.max(Math.abs(rf), Math.abs(lf));
-            double magnitude = Math.sqrt((lx * lx) + (ly * ly));
-            ratio = (max == 0) ? 0 : magnitude / max * 0.8;
-
-            wucru.leftFront.setPower((lf+rx)*ratio);
-            wucru.leftBack.setPower((rf+rx)*ratio);
-            wucru.rightFront.setPower((rf-rx)*ratio);
-            wucru.rightBack.setPower((lf-rx)*ratio);
+            double magnitude = Math.sqrt((lx * lx) + (ly * ly) + (rx * rx));
+            if (max == 0) {
+                ratio = 0;
+            }
+            else {
+                ratio = magnitude / max ;
+            }
+            if(lx < 0.02 && lx > -0.02 && ly < 0.02 && ly > -0.02){
+                wucru.leftFront.setPower(0.8 * turnPower);
+                wucru.leftBack.setPower(0.8 * turnPower);
+                wucru.rightFront.setPower(0.8 * -turnPower);
+                wucru.rightBack.setPower(0.8 * -turnPower);
+            }
+            else {
+                wucru.leftFront.setPower(lf * ratio + turnPower);
+                wucru.leftBack.setPower(rf * ratio + turnPower);
+                wucru.rightFront.setPower(rf * ratio - turnPower);
+                wucru.rightBack.setPower(lf * ratio - turnPower);
+            }
         }
     }
 }
