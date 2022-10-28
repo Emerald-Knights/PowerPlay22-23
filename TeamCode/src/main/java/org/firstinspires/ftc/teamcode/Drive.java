@@ -12,6 +12,7 @@ public class Drive extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
             double lx=gamepad1.left_stick_x;
             double ly=-gamepad1.left_stick_y;
             double rx=gamepad1.right_stick_x;
