@@ -8,33 +8,43 @@ public class Drive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot wucru = new Robot(hardwareMap, this);
+        robot wucru = new robot(hardwareMap, this);
         waitForStart();
 
-        double lx, rx, ly;
         while (opModeIsActive()) {
 
-            // set the gamepad variables
-            lx = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-            ly = -gamepad1.left_stick_y;
+            double lx=gamepad1.left_stick_x;
+            double ly=-gamepad1.left_stick_y;
+            double rx=gamepad1.right_stick_x;
+            double currentAngle = wucru.imu.getAngularOrientation().firstAngle;
 
+            double direction = Math.atan2(-ly, lx); //set direction
+            // direction = tan(ly/lx)
+            double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
+            double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
+            double turnPower = rx; //turn power can be changed to a magnitude and direction
 
-            telemetry.addData("heading", wucru.imu.getAngularOrientation().firstAngle);
-            telemetry.addData("heading3", wucru.imu.getAngularOrientation().thirdAngle);
-            double angle = wucru.imu.getAngularOrientation().thirdAngle;
-            telemetry.update();
-
-            // do spinny thing
-            double direction = Math.PI; //set direction
-            // direction = tan(y/x)
-            double lf = Math.sin(angle + Math.PI * 3/4 + direction);
-            double rf = Math.sin(angle + Math.PI * 5/4 + direction);
-            double turnPower = 1; //turn power can be changed to a magnitude and direction
-           wucru.leftFront.setPower(lf + turnPower);
-           wucru.leftBack.setPower(rf + turnPower);
-           wucru.rightFront.setPower(rf - turnPower);
-           wucru.rightBack.setPower(lf - turnPower);
+            double ratio;
+            double max = Math.max(Math.abs(rf), Math.abs(lf));
+            double magnitude = Math.sqrt((lx * lx) + (ly * ly) + (rx * rx));
+            if (max == 0) {
+                ratio = 0;
+            }
+            else {
+                ratio = magnitude / max ;
+            }
+            if(lx < 0.02 && lx > -0.02 && ly < 0.02 && ly > -0.02){
+                wucru.leftFront.setPower(0.8 * turnPower);
+                wucru.leftBack.setPower(0.8 * turnPower);
+                wucru.rightFront.setPower(0.8 * -turnPower);
+                wucru.rightBack.setPower(0.8 * -turnPower);
+            }
+            else {
+                wucru.leftFront.setPower(lf * ratio + turnPower);
+                wucru.leftBack.setPower(rf * ratio + turnPower);
+                wucru.rightFront.setPower(rf * ratio - turnPower);
+                wucru.rightBack.setPower(lf * ratio - turnPower);
+            }
         }
     }
 }

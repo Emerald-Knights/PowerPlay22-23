@@ -13,11 +13,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class Robot {
-
-
+public class robot extends MecanumDrive {
     public boolean RUN_USING_ENCODER;
-
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
 
