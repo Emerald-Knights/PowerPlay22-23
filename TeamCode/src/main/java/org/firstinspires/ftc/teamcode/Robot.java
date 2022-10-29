@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -13,13 +15,14 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class Robot extends MecanumDrive {
+public class Robot {
 
 
     public boolean RUN_USING_ENCODER;
 
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
+    Servo arm, wrist;
 
     BNO055IMU imu;
     Orientation currentAngle;
@@ -37,6 +40,9 @@ public class Robot extends MecanumDrive {
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        arm = hardwareMap.get(Servo.class, "arm");
+        wrist = hardwareMap.get(Servo.class, "wrist");
 
         //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -95,18 +101,16 @@ public class Robot extends MecanumDrive {
         });
     }
 
-    //auton methods
-    public void resetEncoders(){
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    //teleop methods
+    public void moveWrist(boolean close) {
+        if(close) {
+            wrist.setPosition(0.717);
+        } else {
+            wrist.setPosition(0.838);
+        }
     }
 
+    //auton methods
     public static double angleWrap(double angle){
         while(angle>Math.PI){
             angle-=2*Math.PI;
