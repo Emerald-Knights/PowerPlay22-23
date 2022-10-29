@@ -26,15 +26,15 @@ public class Auton extends LinearOpMode {
         int sleeveColor = DetectorPipeline.sleeveColor;
 
         if (sleeveColor == 1){
-            bot.straight(1,12,0.8);
-            bot.strafe(-1,12,0.8);
+            wucru.straight(1,12,0.8);
+            wucru.strafe(-1,12,0.8);
         }
         if(sleeveColor == 2){
-            bot.straight(1, 12, 0.8);
+            wucru.straight(1, 12, 0.8);
         }
         if (sleeveColor == 3){
-            bot.straight(1,12,0.8);
-            bot.straight(1, 12, 0.8);
+            wucru.straight(1,12,0.8);
+            wucru.straight(1, 12, 0.8);
         }
 
 

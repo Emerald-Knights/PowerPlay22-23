@@ -89,10 +89,19 @@ public class Robot {
         if(close) {
             wrist.setPosition(0.717);
         } else {
-            wrist.setPosition(0.838);
+            wrist.setPosition(0.9);
         }
     }
 
+    public void moveArm(boolean up) {
+        if(up) {
+            arm.setPosition(0.7);
+        } else {
+            arm.setPosition(0);
+        }
+    }
+
+    //auton methods
     public static double angleWrap(double angle){
         while(angle>Math.PI){
             angle-=2*Math.PI;
