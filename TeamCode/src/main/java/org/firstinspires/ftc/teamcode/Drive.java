@@ -13,13 +13,13 @@ public class Drive extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            //drive
             double lx=gamepad1.left_stick_x;
             double ly=-gamepad1.left_stick_y;
             double rx=gamepad1.right_stick_x;
             double currentAngle = wucru.imu.getAngularOrientation().firstAngle;
 
             double direction = Math.atan2(-ly, lx); //set direction
-            // direction = tan(ly/lx)
             double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
             double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
             double turnPower = rx; //turn power can be changed to a magnitude and direction
