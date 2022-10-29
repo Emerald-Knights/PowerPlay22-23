@@ -95,7 +95,7 @@ public class Robot {
 
     public void moveArm(boolean up) {
         if(up) {
-            arm.setPosition(0.7);
+            arm.setPosition(0.75);
         } else {
             arm.setPosition(0);
         }
