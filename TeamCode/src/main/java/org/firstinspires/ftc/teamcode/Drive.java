@@ -8,7 +8,7 @@ public class Drive extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot wucru = new robot(hardwareMap, this);
+        Robot wucru = new Robot(hardwareMap, this);
         waitForStart();
 
         while (opModeIsActive()) {

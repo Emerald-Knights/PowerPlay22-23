@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -13,10 +15,11 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class robot extends MecanumDrive {
+public class Robot {
     public boolean RUN_USING_ENCODER;
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
+    Servo arm, wrist;
 
     BNO055IMU imu;
     Orientation currentAngle;
@@ -34,6 +37,9 @@ public class robot extends MecanumDrive {
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        arm = hardwareMap.get(Servo.class, "arm");
+        wrist = hardwareMap.get(Servo.class, "wrist");
 
         //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -76,6 +82,16 @@ public class robot extends MecanumDrive {
 
         });
     }
+
+    //teleop methods
+    public void moveWrist(boolean close) {
+        if(close) {
+            wrist.setPosition(0.717);
+        } else {
+            wrist.setPosition(0.838);
+        }
+    }
+
 
     //auton methods
     public void resetEncoders(){
