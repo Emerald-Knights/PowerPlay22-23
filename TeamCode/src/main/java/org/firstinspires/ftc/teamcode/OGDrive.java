@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class OGDrive extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        robot bot = new robot(hardwareMap, this);
+        Robot bot = new Robot(hardwareMap, this);
         waitForStart();
 
         double lx, rx, ly; // intialize variables for the gamepad
