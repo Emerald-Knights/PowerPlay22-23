@@ -11,6 +11,7 @@ public class Auton extends LinearOpMode {
 
         Robot wucru = new Robot(hardwareMap, this);
         wucru.initOpenCV();
+        wucru.resetEncoders();
 //        telemetry.addData("o3", DetectorPipeline.orangeCnt);
 //        telemetry.addData("o3", DetectorPipeline.purpleCnt);
 //        telemetry.addData("o3", DetectorPipeline.greenCnt);
@@ -22,6 +23,22 @@ public class Auton extends LinearOpMode {
 
         telemetry.update();
         waitForStart();
+
+        int sleeveColor = DetectorPipeline.sleeveColor;
+
+        if (sleeveColor == 1){
+            wucru.strafe(-1,27,0.8);
+            wucru.resetEncoders();
+            wucru.straight(1,30,0.8);
+        }
+        if(sleeveColor == 2){
+            wucru.straight(1, 28, 0.8);
+        }
+        if (sleeveColor == 3){
+            wucru.strafe(1,27,0.8);
+            wucru.resetEncoders();
+            wucru.straight(1, 30, 0.8);
+        }
 
 
 
