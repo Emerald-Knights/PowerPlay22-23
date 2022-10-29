@@ -16,9 +16,9 @@ public class DetectorPipeline extends OpenCvPipeline {
 
     //insert target purple and target green as well
     double[] targetOrange = {220, 160, 120};
-    double[] targetPurple = {138, 114, 173};
-    double[] targetGreen = {132, 179, 125};
-    double pctColorError = 0.2;
+    double[] targetPurple = {106, 90, 161};
+    double[] targetGreen = {110, 145, 100};
+    double pctColorError = 0.20;
 
 
     //the final value after comparison for which sleeve color is shown

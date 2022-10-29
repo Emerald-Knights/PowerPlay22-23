@@ -29,8 +29,8 @@ public class Robot {
     HardwareMap hardwareMap;
 
     public final int DIRECTION = 1;
-    final static double TICKS_TO_INCH_FORWARD = 37.87;
-    final static double TICKS_TO_INCH_STRAFE = 70.68;
+    final static double TICKS_TO_INCH_FORWARD = 0.0265;
+    final static double TICKS_TO_INCH_STRAFE = 0.01975;
     static DcMotor[] encoderMotors;
 
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
@@ -112,10 +112,29 @@ public class Robot {
         return angle;
     }
 
+    public int averageTicks() {
+        return (Math.abs(leftFront.getCurrentPosition())
+                + Math.abs(leftBack.getCurrentPosition())
+                + Math.abs(rightFront.getCurrentPosition())
+                + Math.abs(rightBack.getCurrentPosition()))/4;
+    }
+
+    public void resetEncoders() {
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    }
+
     //1 is right -1 is left
     public void strafe(double direction, double distance, double speed) {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while(Math.abs(leftFront.getCurrentPosition())*TICKS_TO_INCH_STRAFE < distance){
+        while(averageTicks() * TICKS_TO_INCH_STRAFE < distance){
             leftBack.setPower(-speed*direction);
             leftFront.setPower(speed*direction);
             rightBack.setPower(speed*direction);
@@ -131,12 +150,11 @@ public class Robot {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-
     //1 is straight -1 is back
     public void straight(double direction, double distance, double speed) {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        while(Math.abs(leftFront.getCurrentPosition())*TICKS_TO_INCH_FORWARD < distance){
+        while(averageTicks() * TICKS_TO_INCH_FORWARD < distance){
             leftBack.setPower(speed*direction);
             leftFront.setPower(speed*direction);
             rightBack.setPower(speed*direction);
