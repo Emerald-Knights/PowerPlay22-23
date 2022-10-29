@@ -14,6 +14,5 @@ public class AutonPark extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException{
         Robot wucru = new Robot(hardwareMap, this);
-        wucru.initOpenCV();
     }
 }
