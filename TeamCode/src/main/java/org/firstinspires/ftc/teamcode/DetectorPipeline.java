@@ -15,27 +15,26 @@ public class DetectorPipeline extends OpenCvPipeline {
     Telemetry telemetry;
 
     //insert target purple and target green as well
-    double[] targetOrange = {220, 160, 120};
-    double[] targetPurple = {106, 90, 161};
-    double[] targetGreen = {110, 145, 100};
-    double pctColorError = 0.20;
+    static double[] targetOrange = {190, 150, 100};
+    static double[] targetPurple = {108, 94, 165};
+    static double[] targetGreen = {116, 168, 104};
+    static double pctColorError = 0.20;
 
 
     //the final value after comparison for which sleeve color is shown
-    public static int sleeveColor;
+    public static int sleeveColor = 2;
 
     //the dimensions of the area that is scanned
-    int scanWidth = 80;
-    int scanHeight = 80;
+    static int scanWidth = 80;
+    static int scanHeight = 80;
 
     //how much the scanned area is translated
-    int xDev = 0;
-    int yDev = 0;
+    static int xDev = 0;
+    static int yDev = 0;
 
     //brightness increases the color threshold. If it is not detecting, try increasing brightness.
     int brightness = 0;
 
-    @Override
     public Mat processFrame(Mat input){
         Size imageSize = input.size();
         Mat output = input.clone();
@@ -78,7 +77,7 @@ public class DetectorPipeline extends OpenCvPipeline {
         return output;
     }
 
-    private boolean compareColor(double[] targetColor, double[] pixelColor) {
+    private static boolean compareColor(double[] targetColor, double[] pixelColor) {
         boolean output = true;
         for(int i = 0; i < 3; i++) {
             output = output && pixelColor[i] < targetColor[i] * (1 + pctColorError) && pixelColor[i] > targetColor[i] * (1 - pctColorError);

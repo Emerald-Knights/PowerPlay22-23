@@ -10,7 +10,9 @@ public class Auton extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
 
         Robot wucru = new Robot(hardwareMap, this);
+
         wucru.initOpenCV();
+        waitForStart();
         wucru.resetEncoders();
 //        telemetry.addData("o3", DetectorPipeline.orangeCnt);
 //        telemetry.addData("o3", DetectorPipeline.purpleCnt);
@@ -20,10 +22,7 @@ public class Auton extends LinearOpMode {
 //        telemetry.addData("c2", detector.pixelColor[1]);
 //        telemetry.addData("c3", detector.pixelColor[2]);
 //        telemetry.addData("c4", detector.pixelColor[3]);
-
         telemetry.update();
-        waitForStart();
-
         int sleeveColor = DetectorPipeline.sleeveColor;
 
         if (sleeveColor == 1){

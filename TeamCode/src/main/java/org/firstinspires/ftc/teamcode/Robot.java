@@ -89,13 +89,13 @@ public class Robot {
         if(close) {
             wrist.setPosition(0.717);
         } else {
-            wrist.setPosition(0.9);
+            wrist.setPosition(0.82);
         }
     }
 
     public void moveArm(boolean up) {
         if(up) {
-            arm.setPosition(0.75);
+            arm.setPosition(0.8);
         } else {
             arm.setPosition(0);
         }
