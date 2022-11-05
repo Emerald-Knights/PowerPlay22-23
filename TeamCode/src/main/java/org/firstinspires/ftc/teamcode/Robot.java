@@ -112,6 +112,30 @@ public class Robot {
         return angle;
     }
 
+    public static double factorial(int num){
+        int product = 1;
+        for (int i = num; i >= 1; i--){
+            product *= i;
+        }
+        return product;
+    }
+
+    public static double sin(double angle){
+        double sum = 0;
+        for(int i = 1; i<17; i+=4){
+            sum += (Math.pow(angle, i)/factorial(i)) - (Math.pow(angle, i+2)/factorial(i+2));
+        }
+        return(sum);
+    }
+
+    public static double cosine(double angle){
+        double sum = 0;
+        for(int i = 0; i<16; i+=4){
+            sum += (Math.pow(angle, i)/factorial(i)) - (Math.pow(angle, i+2)/factorial(i+2));
+        }
+        return(sum);
+    }
+
     public int averageTicks() {
         return (Math.abs(leftFront.getCurrentPosition())
                 + Math.abs(leftBack.getCurrentPosition())
