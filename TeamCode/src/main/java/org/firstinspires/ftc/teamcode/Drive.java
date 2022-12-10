@@ -46,18 +46,18 @@ public class Drive extends LinearOpMode {
             ratio = Math.max(Math.max(Math.abs(rf), Math.abs(lf)), Math.abs(rx)) * (0.8/max);
 
             //deadzone
-            if(lx < 0.02 && lx > -0.02 && ly < 0.02 && ly > -0.02){
-                wucru.leftFront.setPower(0.8 * turnPower);
-                wucru.leftBack.setPower(0.8 * turnPower);
-                wucru.rightFront.setPower(0.8 * -turnPower);
-                wucru.rightBack.setPower(0.8 * -turnPower);
-            }
-            else {
-                wucru.leftFront.setPower(ratio*(lf + turnPower));
-                wucru.leftBack.setPower(ratio*(rf + turnPower));
-                wucru.rightFront.setPower(ratio*(rf - turnPower));
-                wucru.rightBack.setPower(ratio*(lf - turnPower));
-            }
+//            if(lx < 0.02 && lx > -0.02 && ly < 0.02 && ly > -0.02){
+//                wucru.leftFront.setPower(0.8 * turnPower);
+//                wucru.leftBack.setPower(0.8 * turnPower);
+//                wucru.rightFront.setPower(0.8 * -turnPower);
+//                wucru.rightBack.setPower(0.8 * -turnPower);
+//            }
+//            else {
+//                wucru.leftFront.setPower(ratio*(lf + turnPower));
+//                wucru.leftBack.setPower(ratio*(rf + turnPower));
+//                wucru.rightFront.setPower(ratio*(rf - turnPower));
+//                wucru.rightBack.setPower(ratio*(lf - turnPower));
+//            }
 
             //arm/wrist
             if(gamepad2.x && !lateX) {
@@ -69,15 +69,15 @@ public class Drive extends LinearOpMode {
                     wristClose = !wristClose;
                 }
             }
-            if(gamepad2.b && !lateB) {
-                if(armUp) {
-                    wucru.moveArm(false);
-                    armUp = !armUp;
-                } else {
-                    wucru.moveArm(true);
-                    armUp = !armUp;
-                }
-            }
+//            if(gamepad2.b && !lateB) {
+//                if(armUp) {
+//                    wucru.moveArm(false);
+//                    armUp = !armUp;
+//                } else {
+//                    wucru.moveArm(true);
+//                    armUp = !armUp;
+//                }
+//            }
 
             lateX = gamepad2.x;
             lateB = gamepad2.b;
