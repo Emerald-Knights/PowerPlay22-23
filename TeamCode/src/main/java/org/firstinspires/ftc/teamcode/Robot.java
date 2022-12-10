@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -21,6 +22,8 @@ public class Robot {
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
     Servo arm, wrist;
+
+    DistanceSensor distance;
 
     BNO055IMU imu;
     Orientation currentAngle;
@@ -41,6 +44,7 @@ public class Robot {
 
         arm = hardwareMap.get(Servo.class, "arm");
         wrist = hardwareMap.get(Servo.class, "wrist");
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
 
         //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
