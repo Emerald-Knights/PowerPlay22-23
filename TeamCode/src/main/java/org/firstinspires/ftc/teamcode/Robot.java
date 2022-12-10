@@ -85,11 +85,11 @@ public class Robot {
     }
 
     //teleop methods
-    public void moveWrist(boolean close) {
+    public void moveClaw(boolean close) {
         if(close) {
-            wrist.setPosition(0.717);
+            wrist.setPosition(0);
         } else {
-            wrist.setPosition(0.82);
+            wrist.setPosition(.25);
         }
     }
 
