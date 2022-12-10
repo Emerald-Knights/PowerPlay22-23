@@ -31,33 +31,33 @@ public class Drive extends LinearOpMode {
             double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
             double turnPower = rx; //turn power can be changed to a magnitude and direction
 
-//            double ratio;
-//            double max = Math.max(Math.abs(rf), Math.abs(lf)) + Math.abs(turnPower);
-//            double magnitude = Math.sqrt((lf * lf) + (rf * rf) + (rx * rx));
-//            if (max == 0) {
-//                ratio = 0;
-//            }
-//            else {
-//                ratio = 0.8 * magnitude / max ;
-//            }
-
             double ratio;
+            //double max = Math.max(Math.abs(rf), Math.abs(lf)) + Math.abs(turnPower);
             double max = Math.max(Math.abs(rf), Math.abs(lf)) + Math.abs(rx);
+            double magnitude = Math.sqrt((lf * lf) + (rf * rf) + (rx * rx));
+            if (max == 0) {
+                ratio = 0;
+            }
+            else {
+                ratio = 0.8 * magnitude / max ;
+            }
+
+
             ratio = Math.max(Math.max(Math.abs(rf), Math.abs(lf)), Math.abs(rx)) * (0.8/max);
 
             //deadzone
-//            if(lx < 0.02 && lx > -0.02 && ly < 0.02 && ly > -0.02){
-//                wucru.leftFront.setPower(0.8 * turnPower);
-//                wucru.leftBack.setPower(0.8 * turnPower);
-//                wucru.rightFront.setPower(0.8 * -turnPower);
-//                wucru.rightBack.setPower(0.8 * -turnPower);
-//            }
-//            else {
-//                wucru.leftFront.setPower(ratio*(lf + turnPower));
-//                wucru.leftBack.setPower(ratio*(rf + turnPower));
-//                wucru.rightFront.setPower(ratio*(rf - turnPower));
-//                wucru.rightBack.setPower(ratio*(lf - turnPower));
-//            }
+            if(lx < 0.02 && lx > -0.02 && ly < 0.02 && ly > -0.02){
+                wucru.leftFront.setPower(0.8 * turnPower);
+                wucru.leftBack.setPower(0.8 * turnPower);
+                wucru.rightFront.setPower(0.8 * -turnPower);
+                wucru.rightBack.setPower(0.8 * -turnPower);
+            }
+            else {
+                wucru.leftFront.setPower(ratio*(lf + turnPower));
+                wucru.leftBack.setPower(ratio*(rf + turnPower));
+                wucru.rightFront.setPower(ratio*(rf - turnPower));
+                wucru.rightBack.setPower(ratio*(lf - turnPower));
+            }
 
             //arm/wrist
             if(gamepad2.x && !lateX) {
@@ -69,15 +69,15 @@ public class Drive extends LinearOpMode {
                     wristClose = !wristClose;
                 }
             }
-//            if(gamepad2.b && !lateB) {
-//                if(armUp) {
-//                    wucru.moveArm(false);
-//                    armUp = !armUp;
-//                } else {
-//                    wucru.moveArm(true);
-//                    armUp = !armUp;
-//                }
-//            }
+            if(gamepad2.b && !lateB) {
+                if(armUp) {
+                    wucru.moveArm(false);
+                    armUp = !armUp;
+                } else {
+                    wucru.moveArm(true);
+                    armUp = !armUp;
+                }
+            }
 
             lateX = gamepad2.x;
             lateB = gamepad2.b;

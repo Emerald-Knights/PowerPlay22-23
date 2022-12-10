@@ -40,10 +40,10 @@ public class OGDrive extends LinearOpMode {
                 ratio = .8 * magnitude / max;
             }
             // sets the motor power
-//            bot.leftFront.setPower(lf * ratio);
-//            bot.leftBack.setPower(lb * ratio);
-//            bot.rightFront.setPower(rf * ratio);
-//            bot.rightBack.setPower(rb * ratio);
+            bot.leftFront.setPower(lf * ratio);
+            bot.leftBack.setPower(lb * ratio);
+            bot.rightFront.setPower(rf * ratio);
+            bot.rightBack.setPower(rb * ratio);
 
             //arm/wrist
             if(gamepad2.x && !lateX) {
@@ -55,15 +55,15 @@ public class OGDrive extends LinearOpMode {
                     wristClose = !wristClose;
                 }
             }
-//            if(gamepad2.b && !lateB) {
-//                if(armUp) {
-//                    bot.moveArm(false);
-//                    armUp = !armUp;
-//                } else {
-//                    bot.moveArm(true);
-//                    armUp = !armUp;
-//                }
-//            }
+            if(gamepad2.b && !lateB) {
+                if(armUp) {
+                    bot.moveArm(false);
+                    armUp = !armUp;
+                } else {
+                    bot.moveArm(true);
+                    armUp = !armUp;
+                }
+            }
 
             lateX = gamepad2.x;
             lateB = gamepad2.b;
