@@ -14,10 +14,7 @@ public class OGDrive extends LinearOpMode {
         waitForStart();
 
         double lx, rx, ly; // intialize variables for the gamepad
-        boolean lateX = false;
-        boolean lateB = false;
-        boolean armUp = false;
-        boolean wristClose = false;
+        boolean lateA = false;
         while (opModeIsActive()) {
             //drive
 
@@ -45,28 +42,12 @@ public class OGDrive extends LinearOpMode {
             bot.rightFront.setPower(rf * ratio);
             bot.rightBack.setPower(rb * ratio);
 
-            //arm/wrist
-            if(gamepad2.x && !lateX) {
-                if(wristClose) {
-                    bot.moveWrist(false);
-                    wristClose = !wristClose;
-                } else {
-                    bot.moveWrist(true);
-                    wristClose = !wristClose;
-                }
-            }
-            if(gamepad2.b && !lateB) {
-                if(armUp) {
-                    bot.moveArm(false);
-                    armUp = !armUp;
-                } else {
-                    bot.moveArm(true);
-                    armUp = !armUp;
-                }
+            //claw
+            if(!lateA && gamepad2.a) {
+                bot.moveClaw();
             }
 
-            lateX = gamepad2.x;
-            lateB = gamepad2.b;
+            lateA = gamepad2.a;
         }
     }
 }

@@ -19,12 +19,12 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class Robot {
 
     public boolean RUN_USING_ENCODER;
+    private boolean clawClosed = true;
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
     Servo arm, wrist, leftClaw, rightClaw;
 
     DistanceSensor distance;
-
     BNO055IMU imu;
     Orientation currentAngle;
 
@@ -91,14 +91,15 @@ public class Robot {
     }
 
     //teleop methods
-    public void moveWrist(boolean close) {
-        if(close) {
+    public void moveClaw() {
+        if(!clawClosed) {
             rightClaw.setPosition(0.48);
             leftClaw.setPosition(0.37);
         } else {
             rightClaw.setPosition(0.65);
             leftClaw.setPosition(0.20);
         }
+        clawClosed = !clawClosed;
     }
 
     public void moveArm(boolean up) {

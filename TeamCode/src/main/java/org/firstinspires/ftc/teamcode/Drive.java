@@ -8,10 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.android.dx.cf.attrib.AttEnclosin
 @TeleOp (name = "AbsolutelySupremeSoftware ", group = "amongus")
 public class Drive extends LinearOpMode {
 
-    boolean lateX = false;
-    boolean lateB = false;
-    boolean armUp = false;
-    boolean wristClose = false;
+    boolean lateA = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -59,28 +56,13 @@ public class Drive extends LinearOpMode {
                 wucru.rightBack.setPower(ratio*(lf - turnPower));
             }
 
-            //arm/wrist
-            if(gamepad2.x && !lateX) {
-                if(wristClose) {
-                    wucru.moveWrist(false);
-                    wristClose = !wristClose;
-                } else {
-                    wucru.moveWrist(true);
-                    wristClose = !wristClose;
-                }
-            }
-            if(gamepad2.b && !lateB) {
-                if(armUp) {
-                    wucru.moveArm(false);
-                    armUp = !armUp;
-                } else {
-                    wucru.moveArm(true);
-                    armUp = !armUp;
-                }
+            //claw
+            if(!lateA && gamepad2.a) {
+                wucru.moveClaw();
             }
 
-            lateX = gamepad2.x;
-            lateB = gamepad2.b;
+            //set late
+            lateA = gamepad2.a;
 
             telemetry.update();
         }
