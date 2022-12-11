@@ -22,7 +22,8 @@ public class Robot {
     private boolean clawClosed = true;
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
-    Servo arm, wrist, leftClaw, rightClaw;
+    Servo leftClaw, rightClaw;
+    DcMotor arm;
 
     DistanceSensor distance;
     BNO055IMU imu;
@@ -42,8 +43,7 @@ public class Robot {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        arm = hardwareMap.get(Servo.class, "arm");
-        wrist = hardwareMap.get(Servo.class, "wrist");
+        arm = hardwareMap.get(DcMotor.class, "arm");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -53,7 +53,6 @@ public class Robot {
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
-
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -102,12 +101,8 @@ public class Robot {
         clawClosed = !clawClosed;
     }
 
-    public void moveArm(boolean up) {
-        if(up) {
-            arm.setPosition(0.8);
-        } else {
-            arm.setPosition(0);
-        }
+    public void moveArm(double power) {
+        arm.setPower(power);
     }
 
     //auton methods

@@ -38,8 +38,6 @@ public class Drive extends LinearOpMode {
             else {
                 ratio = 0.8 * magnitude / max ;
             }
-
-
             ratio = Math.max(Math.max(Math.abs(rf), Math.abs(lf)), Math.abs(rx)) * (0.8/max);
 
             //deadzone
@@ -60,7 +58,12 @@ public class Drive extends LinearOpMode {
             if(!lateA && gamepad2.a) {
                 wucru.moveClaw();
             }
-
+            //arm
+            if(gamepad2.left_bumper) {
+                wucru.moveArm(0.8);
+            } else if (gamepad2.right_bumper) {
+                wucru.moveArm(-0.8);
+            }
             //set late
             lateA = gamepad2.a;
 
