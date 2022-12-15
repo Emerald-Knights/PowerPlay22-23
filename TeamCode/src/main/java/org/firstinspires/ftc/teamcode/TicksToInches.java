@@ -16,7 +16,7 @@ public class TicksToInches extends LinearOpMode {
         waitForStart();
         int ticks = 1000;
         wucru.resetEncoders();
-        wucru.strafe(-1, ticks, 0.8);
+//        wucru.strafe(-1, ticks, 0.8);
 
         telemetry.addData("Ticks:", ticks);
         telemetry.update();

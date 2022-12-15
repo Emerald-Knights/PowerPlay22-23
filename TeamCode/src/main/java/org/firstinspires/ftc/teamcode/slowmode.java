@@ -28,10 +28,10 @@ public class slowmode extends LinearOpMode {
             rx = gamepad1.right_stick_x;
             ly = -gamepad1.left_stick_y;
             // arithmetic to get motor values - not scaled
-            double lf = -ly - rx + lx;
-            double lb = -ly - rx - lx;
-            double rf = -ly + rx - lx;
-            double rb = -ly + rx + lx;
+            double lf = -ly - rx - lx;
+            double lb = -ly - rx + lx;
+            double rf = -ly + rx + lx;
+            double rb = -ly + rx - lx;
             // scale the motor values
             double ratio;
             double max = Math.max(Math.max(Math.abs(lb), Math.abs(lf)), Math.max(Math.abs(rb), Math.abs(rf)));
@@ -57,33 +57,6 @@ public class slowmode extends LinearOpMode {
 
 
             //arm/wrist
-            if(gamepad2.x && !lateX) {
-                if(wristClose) {
-                    bot.moveClaw(false);
-                    wristClose = !wristClose;
-                } else {
-                    bot.moveClaw(true);
-                    wristClose = !wristClose;
-                }
-            }
-            if(gamepad2.b && !lateB) {
-                if(armUp) {
-                    bot.moveArm(false);
-                    armUp = !armUp;
-                } else {
-                    bot.moveArm(true);
-                    armUp = !armUp;
-                }
-            }
-
-            if(gamepad1.a && !slowModeLate){
-                if(slowMode){
-                    slowMode = false;
-                }
-                else{
-                    slowMode = true;
-                }
-            }
 
             lateX = gamepad2.x;
             lateB = gamepad2.b;
