@@ -26,7 +26,7 @@ public class Drive extends LinearOpMode {
             double direction = Math.atan2(-ly, lx); //set direction
             double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
             double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
-            double turnPower = rx; //turn power can be changed to a magnitude and direction
+            double turnPower = -rx; //turn power can be changed to a magnitude and direction
 
             double ratio;
             //double max = Math.max(Math.abs(rf), Math.abs(lf)) + Math.abs(turnPower);

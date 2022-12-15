@@ -43,15 +43,15 @@ public class Robot {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        arm = hardwareMap.get(DcMotor.class, "arm");
+        //arm = hardwareMap.get(DcMotor.class, "arm");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
-        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        //rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        //leftClaw = hardwareMap.get(Servo.class, "leftClaw");
 
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        //leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -102,7 +102,7 @@ public class Robot {
     }
 
     public void moveArm(double power) {
-        arm.setPower(power);
+        rightFront.setPower(power);
     }
 
     //auton methods

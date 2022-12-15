@@ -23,10 +23,10 @@ public class OGDrive extends LinearOpMode {
             rx = gamepad1.right_stick_x;
             ly = -gamepad1.left_stick_y;
             // arithmetic to get motor values - not scaled
-            double lf = -ly - rx - lx;
-            double lb = -ly - rx + lx;
-            double rf = -ly + rx + lx;
-            double rb = -ly + rx - lx;
+            double lf = ly + rx + lx;
+            double lb = ly + rx - lx;
+            double rf = ly - rx - lx;
+            double rb = ly - rx + lx;
             // scale the motor values
             double ratio;
             double max = Math.max(Math.max(Math.abs(lb), Math.abs(lf)), Math.max(Math.abs(rb), Math.abs(rf)));
