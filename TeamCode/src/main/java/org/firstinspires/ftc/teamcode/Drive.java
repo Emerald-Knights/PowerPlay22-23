@@ -8,10 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.android.dx.cf.attrib.AttEnclosin
 @TeleOp (name = "AbsolutelySupremeSoftware ", group = "amongus")
 public class Drive extends LinearOpMode {
 
-    boolean lateX = false;
-    boolean lateB = false;
-    boolean armUp = false;
-    boolean wristClose = false;
+    boolean lateA = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,20 +26,18 @@ public class Drive extends LinearOpMode {
             double direction = Math.atan2(-ly, lx); //set direction
             double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
             double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
-            double turnPower = rx; //turn power can be changed to a magnitude and direction
-
-//            double ratio;
-//            double max = Math.max(Math.abs(rf), Math.abs(lf)) + Math.abs(turnPower);
-//            double magnitude = Math.sqrt((lf * lf) + (rf * rf) + (rx * rx));
-//            if (max == 0) {
-//                ratio = 0;
-//            }
-//            else {
-//                ratio = 0.8 * magnitude / max ;
-//            }
+            double turnPower = -rx; //turn power can be changed to a magnitude and direction
 
             double ratio;
+            //double max = Math.max(Math.abs(rf), Math.abs(lf)) + Math.abs(turnPower);
             double max = Math.max(Math.abs(rf), Math.abs(lf)) + Math.abs(rx);
+            double magnitude = Math.sqrt((lf * lf) + (rf * rf) + (rx * rx));
+            if (max == 0) {
+                ratio = 0;
+            }
+            else {
+                ratio = 0.8 * magnitude / max ;
+            }
             ratio = Math.max(Math.max(Math.abs(rf), Math.abs(lf)), Math.abs(rx)) * (0.8/max);
 
             //deadzone
@@ -59,28 +54,18 @@ public class Drive extends LinearOpMode {
                 wucru.rightBack.setPower(ratio*(lf - turnPower));
             }
 
-            //arm/wrist
-            if(gamepad2.x && !lateX) {
-                if(wristClose) {
-                    wucru.moveWrist(false);
-                    wristClose = !wristClose;
-                } else {
-                    wucru.moveWrist(true);
-                    wristClose = !wristClose;
-                }
+            //claw
+            if(!lateA && gamepad2.a) {
+                wucru.moveClaw();
             }
-            if(gamepad2.b && !lateB) {
-                if(armUp) {
-                    wucru.moveArm(false);
-                    armUp = !armUp;
-                } else {
-                    wucru.moveArm(true);
-                    armUp = !armUp;
-                }
+            //arm
+            if(gamepad2.left_bumper) {
+                wucru.moveArm(0.8);
+            } else if (gamepad2.right_bumper) {
+                wucru.moveArm(-0.8);
             }
-
-            lateX = gamepad2.x;
-            lateB = gamepad2.b;
+            //set late
+            lateA = gamepad2.a;
 
             telemetry.update();
         }

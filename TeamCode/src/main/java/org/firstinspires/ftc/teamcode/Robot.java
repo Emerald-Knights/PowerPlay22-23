@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -18,10 +19,13 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class Robot {
 
     public boolean RUN_USING_ENCODER;
+    private boolean clawClosed = true;
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
-    Servo arm, wrist;
+    Servo leftClaw, rightClaw;
+    DcMotor arm;
 
+    DistanceSensor distance;
     BNO055IMU imu;
     Orientation currentAngle;
 
@@ -39,15 +43,16 @@ public class Robot {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        arm = hardwareMap.get(Servo.class, "arm");
-        wrist = hardwareMap.get(Servo.class, "wrist");
+        //arm = hardwareMap.get(DcMotor.class, "arm");
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
+        //rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        //leftClaw = hardwareMap.get(Servo.class, "leftClaw");
 
-        //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        //leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
-
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -85,20 +90,19 @@ public class Robot {
     }
 
     //teleop methods
-    public void moveWrist(boolean close) {
-        if(close) {
-            wrist.setPosition(0.717);
+    public void moveClaw() {
+        if(!clawClosed) {
+            rightClaw.setPosition(0.48);
+            leftClaw.setPosition(0.37);
         } else {
-            wrist.setPosition(0.82);
+            rightClaw.setPosition(0.65);
+            leftClaw.setPosition(0.20);
         }
+        clawClosed = !clawClosed;
     }
 
-    public void moveArm(boolean up) {
-        if(up) {
-            arm.setPosition(0.8);
-        } else {
-            arm.setPosition(0);
-        }
+    public void moveArm(double power) {
+        rightFront.setPower(power);
     }
 
     //auton methods
