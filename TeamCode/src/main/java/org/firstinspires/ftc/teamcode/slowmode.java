@@ -57,33 +57,6 @@ public class slowmode extends LinearOpMode {
 
 
             //arm/wrist
-//            if(gamepad2.x && !lateX) {
-//                if(wristClose) {
-//                    bot.moveWrist(false);
-//                    wristClose = !wristClose;
-//                } else {
-//                    bot.moveWrist(true);
-//                    wristClose = !wristClose;
-//                }
-//            }
-//            if(gamepad2.b && !lateB) {
-//                if(armUp) {
-//                    bot.moveArm(false);
-//                    armUp = !armUp;
-//                } else {
-//                    bot.moveArm(true);
-//                    armUp = !armUp;
-//                }
-//            }
-//
-//            if(gamepad1.a && !slowModeLate){
-//                if(slowMode){
-//                    slowMode = false;
-//                }
-//                else{
-//                    slowMode = true;
-//                }
-//            }
 
             lateX = gamepad2.x;
             lateB = gamepad2.b;
