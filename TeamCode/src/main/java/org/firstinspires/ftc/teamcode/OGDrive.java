@@ -44,24 +44,7 @@ public class OGDrive extends LinearOpMode {
 
 
             //arm/wrist
-            if(gamepad2.x && !lateX) {
-                if(wristClose) {
-                    bot.moveClaw(false);
-                    wristClose = !wristClose;
-                } else {
-                    bot.moveClaw(true);
-                    wristClose = !wristClose;
-                }
-            }
-            if(gamepad2.b && !lateB) {
-                if(armUp) {
-                    bot.moveArm(false);
-                    armUp = !armUp;
-                } else {
-                    bot.moveArm(true);
-                    armUp = !armUp;
-                }
-            }
+
 
             lateA = gamepad2.a;
         }

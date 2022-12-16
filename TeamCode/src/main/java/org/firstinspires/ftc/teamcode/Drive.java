@@ -63,6 +63,8 @@ public class Drive extends LinearOpMode {
                 wucru.moveArm(0.8);
             } else if (gamepad2.right_bumper) {
                 wucru.moveArm(-0.8);
+            } else {
+                wucru.moveArm(0);
             }
             //set late
             lateA = gamepad2.a;

@@ -102,7 +102,7 @@ public class Robot {
     }
 
     public void moveArm(double power) {
-        rightFront.setPower(power);
+        leftFront.setPower(power);
     }
 
     //auton methods
