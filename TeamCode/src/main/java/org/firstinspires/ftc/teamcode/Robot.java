@@ -23,7 +23,7 @@ public class Robot {
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
     Servo leftClaw, rightClaw;
-    DcMotor arm;
+    DcMotor slides;
 
     DistanceSensor distance;
     BNO055IMU imu;
@@ -43,7 +43,7 @@ public class Robot {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        //arm = hardwareMap.get(DcMotor.class, "arm");
+        slides = hardwareMap.get(DcMotor.class, "slides");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         //rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         //leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -53,6 +53,8 @@ public class Robot {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
+
+        slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -102,7 +104,7 @@ public class Robot {
     }
 
     public void moveArm(double power) {
-        leftFront.setPower(power);
+        slides.setPower(power);
     }
 
     //auton methods
@@ -132,7 +134,7 @@ public class Robot {
         return(sum);
     }
 
-    public static double cosine(double angle){
+    public static double cos(double angle){
         double sum = 0;
         for(int i = 0; i<16; i+=4){
             sum += (Math.pow(angle, i)/factorial(i)) - (Math.pow(angle, i+2)/factorial(i+2));
