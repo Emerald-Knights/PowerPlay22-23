@@ -22,6 +22,7 @@ public class ServoProgramming extends LinearOpMode {
             else if(gamepad1.b && !lateB) {
                 currentPos += 0.0002;
             }
+            wucru.rightClaw.setPosition(currentPos);
             telemetry.addData("Current Position", currentPos);
             telemetry.update();
         }

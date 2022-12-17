@@ -45,8 +45,8 @@ public class Robot {
 
         //arm = hardwareMap.get(DcMotor.class, "arm");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
-        //rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        //leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -92,10 +92,10 @@ public class Robot {
     //teleop methods
     public void moveClaw() {
         if(!clawClosed) {
-            rightClaw.setPosition(0.48);
+            rightClaw.setPosition(0.28);
             leftClaw.setPosition(0.37);
         } else {
-            rightClaw.setPosition(0.65);
+            rightClaw.setPosition(0.45);
             leftClaw.setPosition(0.20);
         }
         clawClosed = !clawClosed;
