@@ -38,15 +38,15 @@ public class Robot {
     static DcMotor[] encoderMotors;
 
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         slides = hardwareMap.get(DcMotor.class, "slides");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
-        //rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        //leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
