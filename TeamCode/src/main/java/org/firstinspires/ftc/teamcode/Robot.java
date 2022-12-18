@@ -8,18 +8,20 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class Robot {
+public class Robot extends SampleMecanumDrive {
 
     public boolean RUN_USING_ENCODER;
-    private boolean clawClosed = true;
+    private boolean clawClosed = false;
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
     Servo leftClaw, rightClaw;
@@ -28,6 +30,7 @@ public class Robot {
     DistanceSensor distance;
     BNO055IMU imu;
     Orientation currentAngle;
+    ElapsedTime timer;
 
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
@@ -38,6 +41,7 @@ public class Robot {
     static DcMotor[] encoderMotors;
 
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
+        super(hardwareMap);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -63,6 +67,7 @@ public class Robot {
         currentAngle = imu.getAngularOrientation();
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
+        timer = new ElapsedTime();
     }
 
     public void initOpenCV() {
@@ -95,7 +100,7 @@ public class Robot {
     public void moveClaw() {
         if(!clawClosed) {
             rightClaw.setPosition(0.365);
-            leftClaw.setPosition(0);
+            leftClaw.setPosition(0.07);
         } else {
             rightClaw.setPosition(0.23);
             leftClaw.setPosition(0.23);
@@ -212,5 +217,13 @@ public class Robot {
         rightFront.setPower(0);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void moveSlide(double vector, double time) {
+        timer.reset();
+        while(timer.seconds() < time) {
+            slides.setPower(vector);
+        }
+        slides.setPower(0);
     }
 }

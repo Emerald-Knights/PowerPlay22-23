@@ -69,6 +69,8 @@ public class Drive extends LinearOpMode {
             //set late
             lateA = gamepad2.a;
 
+            telemetry.addData("servo", wucru.leftClaw.getPosition());
+            telemetry.addData("rservo", wucru.rightClaw.getPosition());
             telemetry.update();
         }
     }
