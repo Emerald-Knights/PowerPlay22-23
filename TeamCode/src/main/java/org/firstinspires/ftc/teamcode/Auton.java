@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Auton", group="auto")
+@Autonomous(name="W-AUTON", group="auto")
 public class Auton extends LinearOpMode {
 
     @Override
@@ -11,35 +15,54 @@ public class Auton extends LinearOpMode {
 
         Robot wucru = new Robot(hardwareMap, this);
 
-        wucru.initOpenCV();
+        //wucru.initOpenCV();
         waitForStart();
         wucru.resetEncoders();
-//        telemetry.addData("o3", DetectorPipeline.orangeCnt);
-//        telemetry.addData("o3", DetectorPipeline.purpleCnt);
-//        telemetry.addData("o3", DetectorPipeline.greenCnt);
-        telemetry.addData("sleeveColor", DetectorPipeline.sleeveColor);
-//        telemetry.addData("c1", detector.pixelColor[0]);
-//        telemetry.addData("c2", detector.pixelColor[1]);
-//        telemetry.addData("c3", detector.pixelColor[2]);
-//        telemetry.addData("c4", detector.pixelColor[3]);
-        telemetry.update();
-        int sleeveColor = DetectorPipeline.sleeveColor;
 
-        if (sleeveColor == 1){
-            wucru.strafe(-1,27,0.8);
-            wucru.resetEncoders();
-            wucru.straight(1,30,0.8);
+        Trajectory traj_left = wucru.trajectoryBuilder(new Pose2d(), false)
+                .strafeLeft(24)
+                .build();
+
+        Trajectory traj_leftToPole = wucru.trajectoryBuilder(traj_left.end(), false)
+                .splineToLinearHeading(new Pose2d(31, 18, Math.toRadians(-45)), Math.toRadians(0))
+                .build();
+
+        Trajectory traj_adjustToPole = wucru.trajectoryBuilder(traj_leftToPole.end(), false)
+                .forward(6)
+                .build();
+
+        Trajectory traj_backBeforePark = wucru.trajectoryBuilder(traj_adjustToPole.end(), false)
+                .back(12)
+                .build();
+
+        Trajectory traj_park;
+        if(DetectorPipeline.sleeveColor == 0) {
+            traj_park = wucru.trajectoryBuilder(traj_backBeforePark.end(), false)
+                    .lineToLinearHeading(new Pose2d(23, -26, Math.toRadians(0)))
+                    .build();
+        } else if(DetectorPipeline.sleeveColor == 1) {
+            traj_park = wucru.trajectoryBuilder(traj_backBeforePark.end(), false)
+                    .lineToLinearHeading(new Pose2d(23, -2, Math.toRadians(0)))
+                    .build();
+        } else {
+            traj_park = wucru.trajectoryBuilder(traj_backBeforePark.end(), false)
+                    .lineToLinearHeading(new Pose2d(23, 22, Math.toRadians(0)))
+                    .build();
         }
-        if(sleeveColor == 2){
-            wucru.straight(1, 28, 0.8);
-        }
-        if (sleeveColor == 3){
-            wucru.strafe(1,27,0.8);
-            wucru.resetEncoders();
-            wucru.straight(1, 30, 0.8);
-        }
 
+        wucru.moveClaw();
+        sleep(1000);
+        wucru.moveClaw();
+        wucru.followTrajectory(traj_left);
+        wucru.followTrajectory(traj_leftToPole);
 
+        wucru.moveSlide(0.45, 7);
+        wucru.followTrajectory(traj_adjustToPole);
+        wucru.moveClaw();
+        wucru.followTrajectory(traj_backBeforePark);
 
+        wucru.followTrajectory(traj_park);
+        wucru.moveSlide(-0.4, 7);
+        sleep(1000);
     }
 }
