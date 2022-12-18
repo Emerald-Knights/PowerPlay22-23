@@ -94,11 +94,11 @@ public class Robot {
     //teleop methods
     public void moveClaw() {
         if(!clawClosed) {
-            rightClaw.setPosition(0.48);
-            leftClaw.setPosition(0.37);
+            rightClaw.setPosition(0.365);
+            leftClaw.setPosition(0);
         } else {
-            rightClaw.setPosition(0.65);
-            leftClaw.setPosition(0.20);
+            rightClaw.setPosition(0.23);
+            leftClaw.setPosition(0.23);
         }
         clawClosed = !clawClosed;
     }
