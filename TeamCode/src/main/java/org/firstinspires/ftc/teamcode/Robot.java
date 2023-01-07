@@ -24,6 +24,7 @@ public class Robot extends SampleMecanumDrive {
     private boolean clawClosed = false;
 
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
+    DcMotor test;
     Servo leftClaw, rightClaw;
     DcMotor slides;
 
@@ -51,6 +52,7 @@ public class Robot extends SampleMecanumDrive {
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        test = hardwareMap.get(DcMotor.class, "test");
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
