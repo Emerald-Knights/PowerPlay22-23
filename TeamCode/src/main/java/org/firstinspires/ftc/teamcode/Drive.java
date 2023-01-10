@@ -18,18 +18,11 @@ public class Drive extends LinearOpMode {
         SLIDE,
         PID
     }
-    public enum SlidePosition{
-        GROUND,
-        LOW,
-        MEDIUM,
-        HIGH
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
         Robot wucru = new Robot(hardwareMap, this);
         RobotState robotState = RobotState.DRIVE;
-        SlidePosition slidePosition = SlidePosition.GROUND;
         waitForStart();
 
         boolean clawLate = false;
@@ -68,19 +61,19 @@ public class Drive extends LinearOpMode {
 
                     if (gamepad2.dpad_down){
                         robotState = RobotState.SLIDE;
-                        slidePosition = SlidePosition.GROUND;
+                        wucru.targetSlidePosition = 0;
                     }
                     else if(gamepad2.dpad_left){
                         robotState = RobotState.SLIDE;
-                        slidePosition = SlidePosition.LOW;
+                        wucru.targetSlidePosition = 1;
                     }
                     else if(gamepad2.dpad_up){
                         robotState = RobotState.SLIDE;
-                        slidePosition = SlidePosition.HIGH;
+                        wucru.targetSlidePosition = 2;
                     }
                     else if(gamepad2.dpad_right){
                         robotState = RobotState.SLIDE;
-                        slidePosition = SlidePosition.MEDIUM;
+                        wucru.targetSlidePosition = 3;
                     }
                     else if(PIDisActive){
                         robotState = RobotState.PID;
@@ -90,29 +83,19 @@ public class Drive extends LinearOpMode {
                     }
                     break;
                 case PID:
-                    wucru.PIDupdate();
+                    PIDisActive = !wucru.PIDupdate();
                     robotState = RobotState.DRIVE;
                     break;
                 case SLIDE:
-                    //arm
-                    if(gamepad2.left_bumper) {
-                        wucru.moveArm(0.8);
-                    } else if (gamepad2.right_bumper) {
-                        wucru.moveArm(-0.8);
-                    } else {
-                        wucru.moveArm(0);
-                    }
-
+                    PIDisActive = true;
+                    robotState = RobotState.PID;
                     break;
                 case CLAW:
-                    //claw
                     wucru.moveClaw();
                     robotState = RobotState.DRIVE;
                     break;
 
             }
-
-
 
             //set late
             clawLate = gamepad2.b;

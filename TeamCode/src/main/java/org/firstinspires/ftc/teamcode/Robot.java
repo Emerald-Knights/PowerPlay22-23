@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -26,7 +27,7 @@ public class Robot extends SampleMecanumDrive {
     DcMotorEx leftBack, leftFront, rightBack, rightFront;
     DcMotor test;
     Servo leftClaw, rightClaw;
-    DcMotor slides;
+    DcMotor slide1, slide2;
 
     DistanceSensor distance;
     BNO055IMU imu;
@@ -41,6 +42,13 @@ public class Robot extends SampleMecanumDrive {
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
     static DcMotor[] encoderMotors;
 
+    PIDController slidePID;
+    int currSlidePosition = 0;
+    int targetSlidePosition = 0;
+    int[] slidePosition = new int[]{0, 0, 0, 0};
+    InterpLUT maxVelLut = new InterpLUT();
+    double maxVel = 1;
+
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
         super(hardwareMap);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -48,11 +56,12 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        slides = hardwareMap.get(DcMotor.class, "slides");
+        slide1 = hardwareMap.get(DcMotor.class, "slide1");
+        slide2 = hardwareMap.get(DcMotor.class, "slide2");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
-        test = hardwareMap.get(DcMotor.class, "test");
+        //test = hardwareMap.get(DcMotor.class, "test");
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -60,7 +69,8 @@ public class Robot extends SampleMecanumDrive {
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
-        slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -70,6 +80,11 @@ public class Robot extends SampleMecanumDrive {
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
+
+        //constants to tune
+        slidePID = new PIDController(0, 0, 0);
+        maxVelLut.add(0, 1);
+        maxVelLut.add(10, 1);
     }
 
     public void initOpenCV() {
@@ -108,10 +123,6 @@ public class Robot extends SampleMecanumDrive {
             leftClaw.setPosition(0.23);
         }
         clawClosed = !clawClosed;
-    }
-
-    public void moveArm(double power) {
-        slides.setPower(power);
     }
 
     //auton methods
@@ -224,12 +235,29 @@ public class Robot extends SampleMecanumDrive {
     public void moveSlide(double vector, double time) {
         timer.reset();
         while(timer.seconds() < time) {
-            slides.setPower(vector);
+            slide1.setPower(vector);
+            slide2.setPower(vector);
         }
-        slides.setPower(0);
+        slide1.setPower(0);
+        slide2.setPower(0);
     }
 
-    public void PIDupdate(){
-
+    public boolean PIDupdate() {
+        float target = slidePosition[targetSlidePosition] - slidePosition[currSlidePosition];
+        maxVel = maxVelLut.get(slide1.getCurrentPosition());
+        if ((target - slide1.getCurrentPosition()) > maxVel){
+            double pow = slidePID.logUpdate(slide1.getCurrentPosition() + maxVel, slide1.getCurrentPosition(), this.linearOpMode.telemetry, "slide");
+            if(pow < 0.8) {
+                slide1.setPower(pow);
+                slide2.setPower(pow);
+            }
+            return false;
+        }
+        else {
+            currSlidePosition = targetSlidePosition;
+            slide1.setPower(0);
+            slide2.setPower(0);
+            return true;
+        }
     }
 }

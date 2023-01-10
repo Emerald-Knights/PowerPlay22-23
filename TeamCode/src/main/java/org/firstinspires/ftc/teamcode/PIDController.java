@@ -9,6 +9,8 @@ public class PIDController {
     private double kP, kI, kD;
     private double integralSum = 0;
     private double lastError = 0;
+    private double lastFilterEstimate = 0;
+    private double a = 1;
     private ElapsedTime time = new ElapsedTime();
 
     public PIDController(double kP, double kI, double kD) {
@@ -17,9 +19,16 @@ public class PIDController {
         this.kD = kD;
     }
 
+    public PIDController(double kP, double kI, double kD, double a) {
+        this.kP = kP;
+        this.kI = kI;
+        this.kD = kD;
+        this.a = a;
+    }
+
     public double update(double target, double state) {
         double error = target - state;
-        double derivative = (error - lastError) / time.seconds();
+        double derivative = (lowPassFilter(error - lastError)) / time.seconds();
         integralSum += error * time.seconds();
         double out = (kP * error) + (kI * integralSum) + (kD * derivative);
         lastError = error;
@@ -27,18 +36,15 @@ public class PIDController {
         return out;
     }
 
-    public double logUpdate(double target, double state, FtcDashboard dashboard, String name) {
-        double error = target - state;
-        double derivative = (error - lastError) / time.seconds();
-        integralSum += error * time.seconds();
-        double out = (kP * error) + (kI * integralSum) + (kD * derivative);
-        lastError = error;
-        time.reset();
-
-        Telemetry telemetry;
-        telemetry = dashboard.getTelemetry();
+    public double logUpdate(double target, double state, Telemetry telemetry, String name) {
+        double out = update(target, state);
         telemetry.addData(name, state);
-
         return out;
+    }
+
+    public double lowPassFilter(double deltaError) {
+        double currFilterEstimate = (a * lastFilterEstimate) + (1-a) * deltaError;
+        lastFilterEstimate = currFilterEstimate;
+        return currFilterEstimate;
     }
 }
