@@ -53,8 +53,8 @@ public class Robot extends SampleMecanumDrive {
         super(hardwareMap);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        //leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        //rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         slide1 = hardwareMap.get(DcMotor.class, "slide1");
         slide2 = hardwareMap.get(DcMotor.class, "slide2");
