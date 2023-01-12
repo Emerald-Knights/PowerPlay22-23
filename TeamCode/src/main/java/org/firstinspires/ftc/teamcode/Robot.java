@@ -53,24 +53,26 @@ public class Robot extends SampleMecanumDrive {
         super(hardwareMap);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
-        //leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        //rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        slide1 = hardwareMap.get(DcMotor.class, "slide1");
-        slide2 = hardwareMap.get(DcMotor.class, "slide2");
+        //slide1 = hardwareMap.get(DcMotor.class, "slide1");
+        //slide2 = hardwareMap.get(DcMotor.class, "slide2");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         //test = hardwareMap.get(DcMotor.class, "test");
 
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+//        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+//        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+//        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+//        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
-        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        slide1.setDirection(DcMotorEx.Direction.REVERSE);
+//        slide2.setDirection(DcMotorEx.Direction.REVERSE);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

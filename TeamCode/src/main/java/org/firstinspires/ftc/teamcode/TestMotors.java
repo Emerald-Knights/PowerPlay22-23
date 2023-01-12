@@ -10,11 +10,15 @@ public class TestMotors extends LinearOpMode{
             Robot wucru = new Robot(hardwareMap, this);
             waitForStart();
             boolean lateA = false;
+            boolean lateB = false;
             while (opModeIsActive()) {
                 if(gamepad1.a && !lateA) {
                     wucru.moveSlide(0.4, 2);
+                } else if (gamepad1.b && !lateB){
+                    wucru.moveSlide(-0.4, 2);
                 }
                 lateA = gamepad1.a;
+                lateB = gamepad1.b;
             }
         }
 }
