@@ -269,14 +269,18 @@ public class Robot extends SampleMecanumDrive {
     }
 
     public void turnToJunction() {
-        double minAngle = Math.atan2(Math.floor(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
+        double fx = Math.floor(getPoseEstimate().getX()/24) * 24;
+        double fy = Math.floor(getPoseEstimate().getY()/24) * 24;
+        double cx = Math.ceil(getPoseEstimate().getX()/24) * 24;
+        double cy = Math.floor(getPoseEstimate().getY()/24) * 24;
+        double minAngle = Math.atan2(fx, fy);
         double minDiff = Math.abs(getPoseEstimate().getHeading() - minAngle);
-        if(Math.abs(Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24)) - getPoseEstimate().getHeading()) < minDiff) {
-            minAngle = Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
-        } else if(Math.abs(Math.atan2(Math.floor(getPoseEstimate().getX()/24), Math.ceil(getPoseEstimate().getY()/24)) - getPoseEstimate().getHeading()) < minDiff) {
-            minAngle = Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
-        } else if(Math.abs(Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.ceil(getPoseEstimate().getY()/24)) - getPoseEstimate().getHeading()) < minDiff) {
-            minAngle = Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
+        if(Math.abs(Math.atan2(cx, fy) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(cx, fy);
+        } else if(Math.abs(Math.atan2(fx, cy) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(cx, fy);
+        } else if(Math.abs(Math.atan2(cx, cy) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(cx, cy);
         }
         turnTo(minAngle, 0.8);
     }
