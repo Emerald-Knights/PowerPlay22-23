@@ -221,7 +221,10 @@ public class Robot extends SampleMecanumDrive {
     }
 
     //1 is right, -1 is left
-    public void turnTo(double direction, double targetAngle, double speed) {
+    public void turnTo(double targetAngle, double speed) {
+        double direction;
+        if(targetAngle > imu.getAngularOrientation().firstAngle && targetAngle < angleWrap(imu.getAngularOrientation().firstAngle + Math.PI)) direction = 1;
+        else direction = -1;
         while(angleWrap(Math.abs(imu.getAngularOrientation().firstAngle - targetAngle)) < 0.03){
             leftBack.setPower(speed*direction);
             leftFront.setPower(speed*direction);
@@ -263,5 +266,18 @@ public class Robot extends SampleMecanumDrive {
             slide2.setPower(0);
             return true;
         }
+    }
+
+    public void turnToJunction() {
+        double minAngle = Math.atan2(Math.floor(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
+        double minDiff = Math.abs(getPoseEstimate().getHeading() - minAngle);
+        if(Math.abs(Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24)) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
+        } else if(Math.abs(Math.atan2(Math.floor(getPoseEstimate().getX()/24), Math.ceil(getPoseEstimate().getY()/24)) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
+        } else if(Math.abs(Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.ceil(getPoseEstimate().getY()/24)) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(Math.ceil(getPoseEstimate().getX()/24), Math.floor(getPoseEstimate().getY()/24));
+        }
+        turnTo(minAngle, 0.8);
     }
 }
