@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -24,13 +25,14 @@ public class Robot extends SampleMecanumDrive {
     public boolean RUN_USING_ENCODER;
     private boolean clawClosed = false;
 
-    DcMotorEx leftBack, leftFront, rightBack, rightFront;
+    public DcMotorEx leftBack, leftFront, rightBack, rightFront;
     DcMotor test;
-    Servo leftClaw, rightClaw;
+    public Servo leftClaw;
+    public Servo rightClaw;
     DcMotor slide1, slide2;
 
-    DistanceSensor distance;
-    BNO055IMU imu;
+    public DistanceSensor distance;
+    public BNO055IMU imu;
     Orientation currentAngle;
     ElapsedTime timer;
 
@@ -44,7 +46,7 @@ public class Robot extends SampleMecanumDrive {
 
     PIDController slidePID;
     int currSlidePosition = 0;
-    int targetSlidePosition = 0;
+    public int targetSlidePosition = 0;
     int[] slidePosition = new int[]{0, 0, 0, 0};
     InterpLUT maxVelLut = new InterpLUT();
     double maxVel = 1;
@@ -244,8 +246,8 @@ public class Robot extends SampleMecanumDrive {
         slide2.setPower(0);
     }
 
-    public boolean PIDupdate() {
-        float target = slidePosition[targetSlidePosition] - slidePosition[currSlidePosition];
+    public boolean slideUpdate() {
+        float target = slidePosition[targetSlidePosition];
         maxVel = maxVelLut.get(slide1.getCurrentPosition());
         if ((target - slide1.getCurrentPosition()) > maxVel){
             double pow = slidePID.logUpdate(slide1.getCurrentPosition() + maxVel, slide1.getCurrentPosition(), this.linearOpMode.telemetry, "slide");
