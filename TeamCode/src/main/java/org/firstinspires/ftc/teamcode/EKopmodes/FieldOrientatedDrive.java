@@ -33,13 +33,20 @@ public class FieldOrientatedDrive extends LinearOpMode {
                     double rx=-gamepad1.right_stick_x;
                     double currentAngle = wucru.imu.getAngularOrientation().firstAngle;
 
+                    double maxInput = Math.max(Math.max(Math.abs(lx), Math.abs(ly)), Math.abs(rx));
                     double direction = Math.atan2(-ly, lx); //set direction
-                    double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
-                    double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
+                    double lf = Math.sin(currentAngle + Math.PI*3/4 + direction) * maxInput;
+                    double rf = Math.sin(currentAngle + Math.PI*5/4 + direction) * maxInput;
                     double turnPower = -rx; //turn power can be changed to a magnitude and direction
+                    double denom = turnPower + Math.max(Math.abs(rf), Math.abs(lf));
+                    double translateRatio= Math.pow(Math.max(rf, lf), 2)/denom;
+                    double rotateRatio = Math.pow(turnPower, 2)/denom;
 
-                    double translateRatio= Math.pow(Math.max(rf, lf), 2)/(turnPower+Math.max(rf,lf));
-                    double rotateRatio = Math.pow(turnPower, 2)/(turnPower+Math.max(rf, lf));
+                    telemetry.addData("translateRatio", translateRatio);
+                    telemetry.addData("rotateRatio", rotateRatio);
+                    telemetry.addData("turnPower", turnPower);
+                    telemetry.addData("lf", lf);
+                    telemetry.addData("rf", rf);
 
                     wucru.leftFront.setPower(0.8 * ((translateRatio * lf) + (turnPower * rotateRatio)));
                     wucru.leftBack.setPower(0.8 * ((translateRatio * rf) + (turnPower * rotateRatio)));
