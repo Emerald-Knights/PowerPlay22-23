@@ -261,7 +261,6 @@ public class Robot extends SampleMecanumDrive {
         float target = slidePosition[targetSlidePosition];
         maxVel = 1;
         if ((target - slide1.getCurrentPosition()) > maxVel){
-            telemetry.addData("hi");
             double pow = slidePID.logUpdate(slide1.getCurrentPosition() + maxVel, slide1.getCurrentPosition(), this.linearOpMode.telemetry, "slide");
             if(pow < 0.8) {
                 slide1.setPower(pow);
