@@ -58,8 +58,8 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        //slide1 = hardwareMap.get(DcMotor.class, "slide1");
-        //slide2 = hardwareMap.get(DcMotor.class, "slide2");
+        slide1 = hardwareMap.get(DcMotor.class, "slide1");
+        slide2 = hardwareMap.get(DcMotor.class, "slide2");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -69,10 +69,12 @@ public class Robot extends SampleMecanumDrive {
         //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
-//        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide1.setDirection(DcMotorEx.Direction.REVERSE);
 //        slide2.setDirection(DcMotorEx.Direction.REVERSE);
 
