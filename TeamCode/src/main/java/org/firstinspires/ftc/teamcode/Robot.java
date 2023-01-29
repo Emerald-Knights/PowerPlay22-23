@@ -199,7 +199,7 @@ public class Robot extends SampleMecanumDrive {
         rightBack.setPower(0);
         rightFront.setPower(0);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //1 is straight -1 is back
@@ -217,7 +217,7 @@ public class Robot extends SampleMecanumDrive {
         rightBack.setPower(0);
         rightFront.setPower(0);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //1 is right, -1 is left

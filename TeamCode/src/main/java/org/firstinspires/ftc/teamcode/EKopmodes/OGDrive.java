@@ -17,6 +17,7 @@ public class OGDrive extends LinearOpMode {
 
         double lx, rx, ly; // intialize variables for the gamepad
         boolean lateA = false;
+        bot.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while (opModeIsActive()) {
             //drive
 
@@ -43,10 +44,10 @@ public class OGDrive extends LinearOpMode {
             bot.leftBack.setPower(lb * ratio);
             bot.rightFront.setPower(rf * ratio);
             bot.rightBack.setPower(rb * ratio);
+            telemetry.addData("lb:", bot.leftBack.getCurrentPosition());
 
-
+            telemetry.update();
             //arm/wrist
-
 
             lateA = gamepad2.a;
         }
