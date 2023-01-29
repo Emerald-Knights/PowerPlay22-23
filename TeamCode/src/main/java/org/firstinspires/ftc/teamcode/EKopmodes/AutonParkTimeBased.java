@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.DetectorPipeline;
 import org.firstinspires.ftc.teamcode.Robot;
 
-@Autonomous(name="Auton", group="auto")
-public class AutonPark extends LinearOpMode {
+@Autonomous(name="AutonParkWithTime", group="auto")
+public class AutonParkTimeBased extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -20,7 +20,7 @@ public class AutonPark extends LinearOpMode {
 //        telemetry.addData("o3", DetectorPipeline.orangeCnt);
 //        telemetry.addData("o3", DetectorPipeline.purpleCnt);
 //        telemetry.addData("o3", DetectorPipeline.greenCnt);
-//        telemetry.addData(AutonPark"sleeveColor", DetectorPipeline.sleeveColor);
+//        telemetry.addData(AutonParkTimeBased"sleeveColor", DetectorPipeline.sleeveColor);
 //        telemetry.addData("c1", detector.pixelColor[0]);
 //        telemetry.addData("c2", detector.pixelColor[1]);
 //        telemetry.addData("c3", detector.pixelColor[2]);
@@ -28,21 +28,25 @@ public class AutonPark extends LinearOpMode {
         telemetry.update();
         int sleeveColor = DetectorPipeline.sleeveColor;
 
+        wucru.strafeWtime(-1,0.2,0.8);
+        wucru.straightWtime(1,0.2,0.8);
+
+/*
         if (sleeveColor == 1){
-            wucru.strafe(-1,27,0.8);
+            wucru.strafeWtime(-1,0.4,0.8);
             wucru.resetEncoders();
-            wucru.straight(1,30,0.8);
+            wucru.straightWtime(1,0.4,0.8);
         }
         if(sleeveColor == 2){
-            wucru.straight(1, 28, 0.8);
+            wucru.straightWtime(1, 0.4, 0.8);
         }
         if (sleeveColor == 3){
-            wucru.strafe(1,27,0.8);
+            wucru.strafeWtime(1,0.4,0.8);
             wucru.resetEncoders();
-            wucru.straight(1, 30, 0.8);
+            wucru.straightWtime(1, 0.4, 0.8);
         }
 
-
+*/
 
     }
 }

@@ -58,8 +58,8 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        //slide1 = hardwareMap.get(DcMotor.class, "slide1");
-        //slide2 = hardwareMap.get(DcMotor.class, "slide2");
+        slide1 = hardwareMap.get(DcMotor.class, "slide1");
+        slide2 = hardwareMap.get(DcMotor.class, "slide2");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
@@ -219,6 +219,34 @@ public class Robot extends SampleMecanumDrive {
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+    public void straightWtime(double direction, double speed ,double time){
+        timer.reset();
+        while(timer.seconds() < time) {
+            leftBack.setPower(speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(speed*direction);
+            rightFront.setPower(speed*direction);
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+    }
+
+    public void strafeWtime(double direction, double speed, double time) {
+        timer.reset();
+        while(timer.seconds() < time){
+            leftBack.setPower(-speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(speed*direction);
+            rightFront.setPower(-speed*direction);
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+    }
+
 
     //1 is right, -1 is left
     public void turnTo(double targetAngle, double speed) {
@@ -245,6 +273,14 @@ public class Robot extends SampleMecanumDrive {
             slide1.setPower(vector);
             slide2.setPower(vector);
         }
+        slide1.setPower(0);
+        slide2.setPower(0);
+    }
+    public void slideslides(double power){
+        slide1.setPower(power);
+        slide2.setPower(power);
+    }
+    public void slideZero(){
         slide1.setPower(0);
         slide2.setPower(0);
     }
