@@ -28,7 +28,7 @@ public class AutonParkTimeBased extends LinearOpMode {
         telemetry.update();
         int sleeveColor = DetectorPipeline.sleeveColor;
 
-        wucru.strafeWtime(-1,0.2,0.8);
+        wucru.strafeWtime(-1,0.2,0.7);
         sleep(100);
         wucru.straightWtime(1,0.1,0.8);
 
