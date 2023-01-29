@@ -120,19 +120,11 @@ public class Robot extends SampleMecanumDrive {
     //teleop methods
     public void moveClaw() {
         if(!clawClosed) {
-<<<<<<< HEAD
-            rightClaw.setPosition(0.28);
-            leftClaw.setPosition(0.37);
-        } else {
-            rightClaw.setPosition(0.45);
-            leftClaw.setPosition(0.20);
-=======
             rightClaw.setPosition(0.365);
             leftClaw.setPosition(0.07);
         } else {
             rightClaw.setPosition(0.23);
             leftClaw.setPosition(0.23);
->>>>>>> dd56ea4efb00e8e2199f33a107d62c5a0872c673
         }
         clawClosed = !clawClosed;
     }
@@ -259,9 +251,9 @@ public class Robot extends SampleMecanumDrive {
     //1 is right, -1 is left
     public void turnTo(double targetAngle, double speed) {
         double direction;
-        if(targetAngle > imu.getAngularOrientation().firstAngle && targetAngle < angleWrap(imu.getAngularOrientation().firstAngle + Math.PI)) direction = 1;
-        else direction = -1;
-        while(angleWrap(Math.abs(imu.getAngularOrientation().firstAngle - targetAngle)) < 0.03){
+        if(targetAngle > imu.getAngularOrientation().firstAngle && targetAngle < angleWrap(imu.getAngularOrientation().firstAngle + Math.PI)) {direction = -1;}
+        else{ direction = 1;}
+        while(angleWrap(Math.abs(imu.getAngularOrientation().firstAngle - targetAngle)) > 0.02){
             leftBack.setPower(speed*direction);
             leftFront.setPower(speed*direction);
             rightBack.setPower(-speed*direction);

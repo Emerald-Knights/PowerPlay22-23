@@ -25,29 +25,35 @@ public class AutonParkTimeBased extends LinearOpMode {
 //        telemetry.addData("c2", detector.pixelColor[1]);
 //        telemetry.addData("c3", detector.pixelColor[2]);
 //        telemetry.addData("c4", detector.pixelColor[3]);
-        telemetry.update();
+
         int sleeveColor = DetectorPipeline.sleeveColor;
 
-        wucru.strafeWtime(-1,0.2,0.7);
-        sleep(100);
-        wucru.straightWtime(1,0.1,0.8);
 
-/*
+
+
         if (sleeveColor == 1){
-            wucru.strafeWtime(-1,0.4,0.8);
-            wucru.resetEncoders();
-            wucru.straightWtime(1,0.4,0.8);
+        wucru.strafeWtime(-1,0.2,0.7);
+        sleep(1000);
+        telemetry.addData("heading: ", wucru.imu.getAngularOrientation().firstAngle);
+        telemetry.update();
+        wucru.turnTo(0, 0.08);
+        sleep(1000);
+        wucru.straightWtime(1,0.1,0.8);
         }
         if(sleeveColor == 2){
-            wucru.straightWtime(1, 0.4, 0.8);
+            wucru.straightWtime(1, 0.1, 0.8);
         }
         if (sleeveColor == 3){
-            wucru.strafeWtime(1,0.4,0.8);
-            wucru.resetEncoders();
-            wucru.straightWtime(1, 0.4, 0.8);
+        wucru.strafeWtime(1,0.2,0.7);
+        sleep(1000);
+        telemetry.addData("heading: ", wucru.imu.getAngularOrientation().firstAngle);
+        telemetry.update();
+        wucru.turnTo(0, 0.08);
+        sleep(1000);
+        wucru.straightWtime(1,0.1,0.8);
         }
 
-*/
+
 
     }
 }
