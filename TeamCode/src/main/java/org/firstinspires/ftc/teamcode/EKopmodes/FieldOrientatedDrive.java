@@ -33,57 +33,64 @@ public class FieldOrientatedDrive extends LinearOpMode {
                     double rx=-gamepad1.right_stick_x;
                     double currentAngle = wucru.imu.getAngularOrientation().firstAngle;
 
-                    double maxInput = Math.max(Math.max(Math.abs(lx), Math.abs(ly)), Math.abs(rx));
+                    double maxInput = Math.max(Math.abs(lx), Math.abs(ly));
                     double direction = Math.atan2(-ly, lx); //set direction
                     double lf = Math.sin(currentAngle + Math.PI*3/4 + direction) * maxInput;
                     double rf = Math.sin(currentAngle + Math.PI*5/4 + direction) * maxInput;
                     double turnPower = -rx; //turn power can be changed to a magnitude and direction
-                    double denom = turnPower + Math.max(Math.abs(rf), Math.abs(lf));
-                    double translateRatio= Math.pow(Math.max(rf, lf), 2)/denom;
-                    double rotateRatio = Math.pow(turnPower, 2)/denom;
+                    double maxTrans = Math.max(Math.abs(rf), Math.abs(lf));
+                    double denominator = Math.abs(turnPower) + maxTrans;
+                    double transRatio = maxTrans / denominator;
+                    double rotRatio = Math.abs(turnPower) / denominator;
 
-                    telemetry.addData("translateRatio", translateRatio);
-                    telemetry.addData("rotateRatio", rotateRatio);
+                    telemetry.addData("turnPower", turnPower);
+                    telemetry.addData("translateRatio", transRatio);
+                    telemetry.addData("rotateRatio", rotRatio);
+                    telemetry.addData("sum of ratios", transRatio + rotRatio);
                     telemetry.addData("turnPower", turnPower);
                     telemetry.addData("lf", lf);
                     telemetry.addData("rf", rf);
+                    telemetry.addData("leftFront", wucru.leftFront.getPower());
+                    telemetry.addData("rightFront", wucru.rightFront.getPower());
+                    telemetry.addData("leftBack", wucru.leftBack.getPower());
+                    telemetry.addData("rightBack", wucru.rightBack.getPower());
+                    wucru.leftFront.setPower(0.8 * ((transRatio * lf) + (turnPower * rotRatio)));
+                    wucru.leftBack.setPower(0.8 * ((transRatio * rf) + (turnPower * rotRatio)));
+                    wucru.rightFront.setPower(0.8 * ((transRatio * rf) - (turnPower * rotRatio)));
+                    wucru.rightBack.setPower(0.8 * ((transRatio * lf) - (turnPower * rotRatio)));
 
-                    wucru.leftFront.setPower(0.8 * ((translateRatio * lf) + (turnPower * rotateRatio)));
-                    wucru.leftBack.setPower(0.8 * ((translateRatio * rf) + (turnPower * rotateRatio)));
-                    wucru.rightFront.setPower(0.8 * ((translateRatio * rf) - (turnPower * rotateRatio)));
-                    wucru.rightBack.setPower(0.8 * ((translateRatio * lf) - (turnPower * rotateRatio)));
-
-                    if (gamepad2.dpad_down){
-                        robotState = RobotState.SLIDE;
-                        wucru.targetSlidePosition = 0;
-                    }
-                    else if(gamepad2.dpad_left){
-                        robotState = RobotState.SLIDE;
-                        wucru.targetSlidePosition = 1;
-                    }
-                    else if(gamepad2.dpad_up){
-                        robotState = RobotState.SLIDE;
-                        wucru.targetSlidePosition = 2;
-                    }
-                    else if(gamepad2.dpad_right){
-                        robotState = RobotState.SLIDE;
-                        wucru.targetSlidePosition = 3;
-                    }
-                    else if(PIDisActive){
-                        robotState = RobotState.PID;
-                    }
-                    else if(gamepad2.b && !clawLate){
+//                    if (gamepad2.dpad_down){
+//                        robotState = RobotState.SLIDE;
+//                        wucru.targetSlidePosition = 0;
+//                    }
+//                    else if(gamepad2.dpad_left){
+//                        robotState = RobotState.SLIDE;
+//                        wucru.targetSlidePosition = 1;
+//                    }
+//                    else if(gamepad2.dpad_up){
+//                        robotState = RobotState.SLIDE;
+//                        wucru.targetSlidePosition = 2;
+//                    }
+//                    else if(gamepad2.dpad_right){
+//                        robotState = RobotState.SLIDE;
+//                        wucru.targetSlidePosition = 3;
+//                    }
+//                    else if(PIDisActive){
+//                        robotState = RobotState.PID;
+//                    }
+                    wucru.setSlidePower(gamepad2.right_trigger * 0.8 + gamepad2.left_trigger * -0.8);
+                    if(gamepad2.b && !clawLate){
                         robotState = RobotState.CLAW;
                     }
                     break;
-                case PID:
-                    PIDisActive = !wucru.slideUpdate();
-                    robotState = RobotState.DRIVE;
-                    break;
-                case SLIDE:
-                    PIDisActive = true;
-                    robotState = RobotState.PID;
-                    break;
+//                case PID:
+//                    PIDisActive = !wucru.slideUpdate();
+//                    robotState = RobotState.DRIVE;
+//                    break;
+//                case SLIDE:
+//                    PIDisActive = true;
+//                    robotState = RobotState.PID;
+//                    break;
                 case CLAW:
                     wucru.moveClaw();
                     robotState = RobotState.DRIVE;

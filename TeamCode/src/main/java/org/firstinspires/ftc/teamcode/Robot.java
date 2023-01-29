@@ -257,6 +257,11 @@ public class Robot extends SampleMecanumDrive {
         slide2.setPower(0);
     }
 
+    public void setSlidePower(double vector) {
+        slide1.setPower(vector);
+        slide2.setPower(vector);
+    }
+
     public boolean slideUpdate() {
         float target = slidePosition[targetSlidePosition];
         maxVel = 1;
