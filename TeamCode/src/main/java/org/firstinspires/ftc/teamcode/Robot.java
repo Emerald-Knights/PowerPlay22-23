@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -23,12 +25,14 @@ public class Robot extends SampleMecanumDrive {
     public boolean RUN_USING_ENCODER;
     private boolean clawClosed = false;
 
-    DcMotorEx leftBack, leftFront, rightBack, rightFront;
-    Servo leftClaw, rightClaw;
-    DcMotor slides;
+    public DcMotorEx leftBack, leftFront, rightBack, rightFront;
+    DcMotor test;
+    public Servo leftClaw;
+    public Servo rightClaw;
+    DcMotor slide1, slide2;
 
-    DistanceSensor distance;
-    BNO055IMU imu;
+    public DistanceSensor distance;
+    public BNO055IMU imu;
     Orientation currentAngle;
     ElapsedTime timer;
 
@@ -40,6 +44,13 @@ public class Robot extends SampleMecanumDrive {
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
     static DcMotor[] encoderMotors;
 
+    PIDController slidePID;
+    int currSlidePosition = 0;
+    public int targetSlidePosition = 0;
+    int[] slidePosition = new int[]{0, 0, 0, 0};
+    InterpLUT maxVelLut = new InterpLUT();
+    double maxVel = 1;
+
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
         super(hardwareMap);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -47,18 +58,23 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        slides = hardwareMap.get(DcMotor.class, "slides");
+        slide1 = hardwareMap.get(DcMotor.class, "slide1");
+        slide2 = hardwareMap.get(DcMotor.class, "slide2");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        //test = hardwareMap.get(DcMotor.class, "test");
 
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
+        //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
-        slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        slide1.setDirection(DcMotorEx.Direction.REVERSE);
+//        slide2.setDirection(DcMotorEx.Direction.REVERSE);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -68,6 +84,11 @@ public class Robot extends SampleMecanumDrive {
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
+
+        //constants to tune
+        slidePID = new PIDController(0, 0, 0);
+        maxVelLut.add(0, 1);
+        maxVelLut.add(10, 1);
     }
 
     public void initOpenCV() {
@@ -114,10 +135,6 @@ public class Robot extends SampleMecanumDrive {
 >>>>>>> dd56ea4efb00e8e2199f33a107d62c5a0872c673
         }
         clawClosed = !clawClosed;
-    }
-
-    public void moveArm(double power) {
-        slides.setPower(power);
     }
 
     //auton methods
@@ -190,7 +207,7 @@ public class Robot extends SampleMecanumDrive {
         rightBack.setPower(0);
         rightFront.setPower(0);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //1 is straight -1 is back
@@ -208,11 +225,42 @@ public class Robot extends SampleMecanumDrive {
         rightBack.setPower(0);
         rightFront.setPower(0);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+    public void straightWtime(double direction, double speed ,double time){
+        timer.reset();
+        while(timer.seconds() < time) {
+            leftBack.setPower(speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(speed*direction);
+            rightFront.setPower(speed*direction);
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
     }
 
+    public void strafeWtime(double direction, double speed, double time) {
+        timer.reset();
+        while(timer.seconds() < time){
+            leftBack.setPower(-speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(speed*direction);
+            rightFront.setPower(-speed*direction);
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+    }
+
+
     //1 is right, -1 is left
-    public void turnTo(double direction, double targetAngle, double speed) {
+    public void turnTo(double targetAngle, double speed) {
+        double direction;
+        if(targetAngle > imu.getAngularOrientation().firstAngle && targetAngle < angleWrap(imu.getAngularOrientation().firstAngle + Math.PI)) direction = 1;
+        else direction = -1;
         while(angleWrap(Math.abs(imu.getAngularOrientation().firstAngle - targetAngle)) < 0.03){
             leftBack.setPower(speed*direction);
             leftFront.setPower(speed*direction);
@@ -230,8 +278,54 @@ public class Robot extends SampleMecanumDrive {
     public void moveSlide(double vector, double time) {
         timer.reset();
         while(timer.seconds() < time) {
-            slides.setPower(vector);
+            slide1.setPower(vector);
+            slide2.setPower(vector);
         }
-        slides.setPower(0);
+        slide1.setPower(0);
+        slide2.setPower(0);
+    }
+    public void slideslides(double power){
+        slide1.setPower(power);
+        slide2.setPower(power);
+    }
+    public void slideZero(){
+        slide1.setPower(0);
+        slide2.setPower(0);
+    }
+
+    public boolean slideUpdate() {
+        float target = slidePosition[targetSlidePosition];
+        maxVel = maxVelLut.get(slide1.getCurrentPosition());
+        if ((target - slide1.getCurrentPosition()) > maxVel){
+            double pow = slidePID.logUpdate(slide1.getCurrentPosition() + maxVel, slide1.getCurrentPosition(), this.linearOpMode.telemetry, "slide");
+            if(pow < 0.8) {
+                slide1.setPower(pow);
+                slide2.setPower(pow);
+            }
+            return false;
+        }
+        else {
+            currSlidePosition = targetSlidePosition;
+            slide1.setPower(0);
+            slide2.setPower(0);
+            return true;
+        }
+    }
+
+    public void turnToJunction() {
+        double fx = Math.floor(getPoseEstimate().getX()/24) * 24;
+        double fy = Math.floor(getPoseEstimate().getY()/24) * 24;
+        double cx = Math.ceil(getPoseEstimate().getX()/24) * 24;
+        double cy = Math.floor(getPoseEstimate().getY()/24) * 24;
+        double minAngle = Math.atan2(fx, fy);
+        double minDiff = Math.abs(getPoseEstimate().getHeading() - minAngle);
+        if(Math.abs(Math.atan2(cx, fy) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(cx, fy);
+        } else if(Math.abs(Math.atan2(fx, cy) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(cx, fy);
+        } else if(Math.abs(Math.atan2(cx, cy) - getPoseEstimate().getHeading()) < minDiff) {
+            minAngle = Math.atan2(cx, cy);
+        }
+        turnTo(minAngle, 0.8);
     }
 }
