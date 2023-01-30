@@ -21,9 +21,9 @@ public class OGDrive extends LinearOpMode {
         while (opModeIsActive()) {
             //drive
             // set the gamepad variables
-            lx = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-            ly = -gamepad1.left_stick_y;
+            lx = gamepad1.left_stick_x * 0.65;
+            rx = gamepad1.right_stick_x * 0.5;
+            ly = -gamepad1.left_stick_y * 0.65;
             // arithmetic to get motor values - not scaled
             double lf = ly + rx + lx;
             double lb = ly + rx - lx;
@@ -36,14 +36,14 @@ public class OGDrive extends LinearOpMode {
             if (max == 0) {
                 ratio = 0;
             } else {
-                ratio = .64 * magnitude / max;
+                ratio = .5 * magnitude / max;
             }
             // sets the motor power
-            if (magnitude > 0.15) {
-                bot.leftFront.setPower(lf * ratio);
-                bot.leftBack.setPower(lb * ratio);
-                bot.rightFront.setPower(rf * ratio);
-                bot.rightBack.setPower(rb * ratio);
+            if (magnitude > 0.18) {
+                bot.leftFront.setPower(lf * ratio*0.8);
+                bot.leftBack.setPower(lb * ratio*0.8);
+                bot.rightFront.setPower(rf * ratio*0.8);
+                bot.rightBack.setPower(rb * ratio*0.8);
             }
             else{
                 bot.leftFront.setPower(0);
@@ -60,8 +60,6 @@ public class OGDrive extends LinearOpMode {
 
 
             telemetry.update();
-            lateA = gamepad2.a;
-
             // slides
             if (gamepad2.right_trigger>0){
                 bot.slideslides(gamepad2.right_trigger*0.4);
@@ -73,9 +71,11 @@ public class OGDrive extends LinearOpMode {
                 bot.slideZero();
             }
             //servo
-            if (gamepad2.a){
+            if (gamepad2.a && !lateA){
                 bot.moveClaw();
             }
+
+            lateA = gamepad2.a;
 
 
         }

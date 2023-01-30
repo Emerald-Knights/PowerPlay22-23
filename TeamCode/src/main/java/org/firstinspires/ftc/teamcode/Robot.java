@@ -123,8 +123,8 @@ public class Robot extends SampleMecanumDrive {
             rightClaw.setPosition(0.365);
             leftClaw.setPosition(0.07);
         } else {
-            rightClaw.setPosition(0.23);
-            leftClaw.setPosition(0.23);
+            rightClaw.setPosition(0.26);
+            leftClaw.setPosition(0.17);
         }
         clawClosed = !clawClosed;
     }

@@ -28,29 +28,35 @@ public class AutonParkTimeBased extends LinearOpMode {
 
         int sleeveColor = DetectorPipeline.sleeveColor;
 
-
-
-
+//        wucru.moveClaw();
+//        wucru.moveClaw();
+        sleep(1000);
+//        wucru.moveSlide(0.4,1.4);
+        telemetry.addData("detected: ", sleeveColor);
+        sleep(1000);
         if (sleeveColor == 1){
-        wucru.strafeWtime(-1,0.2,0.7);
-        sleep(1000);
-        telemetry.addData("heading: ", wucru.imu.getAngularOrientation().firstAngle);
-        telemetry.update();
-        wucru.turnTo(0, 0.08);
-        sleep(1000);
-        wucru.straightWtime(1,0.1,0.8);
+            telemetry.addLine("in 1 loop");
+            wucru.strafeWtime(-1,0.2,0.8);
+            sleep(1000);
+            telemetry.addData("heading: ", wucru.imu.getAngularOrientation().firstAngle);
+            telemetry.update();
+            wucru.turnTo(0, 0.08);
+            sleep(1000);
+            wucru.straightWtime(1,0.1,1);
         }
-        if(sleeveColor == 2){
-            wucru.straightWtime(1, 0.1, 0.8);
+        else if(sleeveColor == 2){
+            telemetry.addLine("in 2 loop");
+            wucru.straightWtime(1, 0.1, 1.3);
         }
-        if (sleeveColor == 3){
-        wucru.strafeWtime(1,0.2,0.7);
-        sleep(1000);
-        telemetry.addData("heading: ", wucru.imu.getAngularOrientation().firstAngle);
-        telemetry.update();
-        wucru.turnTo(0, 0.08);
-        sleep(1000);
-        wucru.straightWtime(1,0.1,0.8);
+        else if (sleeveColor == 3){
+            telemetry.addLine("in 3 loop");
+            wucru.strafeWtime(1,0.2,0.8);
+            sleep(1000);
+            telemetry.addData("heading: ", wucru.imu.getAngularOrientation().firstAngle);
+            telemetry.update();
+            wucru.turnTo(0, 0.08);
+            sleep(1000);
+            wucru.straightWtime(1,0.1,1.1);
         }
 
 

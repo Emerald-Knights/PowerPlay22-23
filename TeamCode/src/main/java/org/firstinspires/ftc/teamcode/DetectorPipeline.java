@@ -17,7 +17,8 @@ public class DetectorPipeline extends OpenCvPipeline {
     //insert target purple and target green as well
     static double[] targetOrange = {190, 150, 100};
     static double[] targetPurple = {138, 126, 189};
-    static double[] targetGreen = {99, 168, 82};
+    static double[] targetGreen = {97, 158, 90};
+    //static double[] targetGreen = {99, 168, 82};
     static double pctColorError = 0.20;
 
 
