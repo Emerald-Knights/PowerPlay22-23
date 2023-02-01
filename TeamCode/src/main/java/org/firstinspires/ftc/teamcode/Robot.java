@@ -42,6 +42,7 @@ public class Robot extends SampleMecanumDrive {
     public final int DIRECTION = 1;
     final static double TICKS_TO_INCH_FORWARD = 0.0265;
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
+    //theoretical ticks to inch 32.7404454359 (360 / circumference of the wheel)
     static DcMotor[] encoderMotors;
 
     PIDController slidePID;
