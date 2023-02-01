@@ -36,7 +36,7 @@ public class OGDrive extends LinearOpMode {
             if (max == 0) {
                 ratio = 0;
             } else {
-                ratio = .4 * magnitude / max;
+                ratio = .3 * magnitude / max;
             }
             // sets the motor power
             if (magnitude > 0.18) {
