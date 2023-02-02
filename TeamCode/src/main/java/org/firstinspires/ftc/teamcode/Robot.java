@@ -166,10 +166,9 @@ public class Robot extends SampleMecanumDrive {
     }
 
     public int averageTicks() {
-        return (Math.abs(leftFront.getCurrentPosition())
-                + Math.abs(leftBack.getCurrentPosition())
+        return ((Math.abs(leftBack.getCurrentPosition())
                 + Math.abs(rightFront.getCurrentPosition())
-                + Math.abs(rightBack.getCurrentPosition()))/4;
+                + Math.abs(rightBack.getCurrentPosition()))/3);
     }
 
     public void resetEncoders() {
@@ -207,9 +206,9 @@ public class Robot extends SampleMecanumDrive {
     public void straight(double direction, double distance, double speed) {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        while(averageTicks() * TICKS_TO_INCH_FORWARD < distance){
+        while(Math.abs(averageTicks() * TICKS_TO_INCH_FORWARD) < Math.abs(distance)){
             leftBack.setPower(speed*direction);
-            leftFront.setPower(speed*direction);
+            leftFront.setPower(0.5*speed*direction);
             rightBack.setPower(speed*direction);
             rightFront.setPower(speed*direction);
         }
@@ -256,7 +255,7 @@ public class Robot extends SampleMecanumDrive {
         else{ direction = 1;}
         while(angleWrap(Math.abs(imu.getAngularOrientation().firstAngle - targetAngle)) > 0.02){
             leftBack.setPower(speed*direction);
-            leftFront.setPower(speed*direction);
+            leftFront.setPower(0.5*speed*direction);
             rightBack.setPower(-speed*direction);
             rightFront.setPower(-speed*direction);
         }

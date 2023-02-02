@@ -28,63 +28,92 @@ public class LeftAuton extends LinearOpMode {
         telemetry.update();
         int sleeveColor = DetectorPipeline.sleeveColor;
 
-        wucru.moveClaw();
-        wucru.moveClaw();
+//        wucru.moveClaw();
+//        wucru.moveClaw();
 
-        if (sleeveColor == 1){
+//        if (sleeveColor == 1){
             wucru.resetEncoders();
-            wucru.straight(1,30,0.5);
-            wucru.strafe(1, 14,0.5);
-            wucru.moveSlide(0.5, 5);
-            wucru.straight(1,10,0.3);
-            wucru.moveClaw();
-            wucru.straight(-1,10,0.3);
-            wucru.moveSlide(-0.5, 5);
+            wucru.straight(1,11,0.2);
+            sleep(1000);
+            wucru.moveSlide(0.6,2.5);
+            wucru.turnTo(3*Math.PI/4, 0.2);
+            wucru.resetEncoders();
+            sleep(1000);
+            wucru.straight(1,4, 0.15);
+
+            wucru.moveSlide(-0.2,0.5);
+            wucru.resetEncoders();
+            sleep(1000);
+            wucru.straight(-1, 4, 0.15);
+            wucru.resetEncoders();
+            sleep(1000);
+            wucru.turnTo(0, 0.16);
+            wucru.moveSlide(-0.4, 1.2);
+            sleep(2000);
+            wucru.moveSlide(-0.4, 0.6);
+            sleep(2000);
+            wucru.moveSlide(-0.2, 1);
+            wucru.resetEncoders();
+            wucru.straight(1,6,0.2);
+            sleep(1000);
+            wucru.turnTo(-Math.PI/2,-0.15);
+            sleep(1000);
+            wucru.resetEncoders();
+            wucru.straightWtime(1, 0.1, 2);
+            sleep(1000);
+            wucru.resetEncoders();
+            wucru.straightWtime(-1,0.1, 2);
+//            wucru.strafe(1, 14,0.5);
+//            wucru.moveSlide(0.5, 5);
+//            wucru.straight(1,10,0.3);
+//            wucru.moveClaw();
+//            wucru.straight(-1,10,0.3);
+//            wucru.moveSlide(-0.5, 5);
 
 
-            wucru.strafe(-1,54,0.4);
+//            wucru.strafe(-1,54,0.4);
             /*
             og code
             wucru.strafe(-1,27,0.5);
             wucru.resetEncoders();
             wucru.straight(1,30,0.5);
              */
-        }
-        if(sleeveColor == 2){
-            wucru.resetEncoders();
-            wucru.straight(1,30,0.5);
-            wucru.strafe(1, 14,0.5);
-            wucru.moveSlide(0.5, 5);
-            wucru.straight(1,10,0.3);
-            wucru.moveClaw();
-            wucru.straight(-1,10,0.3);
-            wucru.moveSlide(-0.5, 5);
-
-
-            wucru.strafe(-1,27,0.4);
-
-            /*
-            wucru.straight(1, 28, 0.8);
-            */
-        }
-
-        if (sleeveColor == 3){
-            wucru.resetEncoders();
-            wucru.straight(1,60,0.5);
-            wucru.strafe(1, 14,0.5);
-            wucru.moveSlide(0.5, 5);
-            wucru.straight(1,10,0.3);
-            wucru.moveClaw();
-            wucru.straight(-1,10,0.3);
-            wucru.moveSlide(-0.5, 5);
-
-
-            wucru.strafe(1,14,0.4);
-            /*
-            wucru.strafe(1,27,0.8);
-            wucru.resetEncoders();
-            wucru.straight(1, 30, 0.8);
-             */
-        }
+//        }
+//        if(sleeveColor == 2){
+//            wucru.resetEncoders();
+//            wucru.straight(1,30,0.5);
+//            wucru.strafe(1, 14,0.5);
+//            wucru.moveSlide(0.5, 5);
+//            wucru.straight(1,10,0.3);
+//            wucru.moveClaw();
+//            wucru.straight(-1,10,0.3);
+//            wucru.moveSlide(-0.5, 5);
+//
+//
+//            wucru.strafe(-1,27,0.4);
+//
+//            /*
+//            wucru.straight(1, 28, 0.8);
+//            */
+//        }
+//
+//        if (sleeveColor == 3){
+//            wucru.resetEncoders();
+//            wucru.straight(1,60,0.5);
+//            wucru.strafe(1, 14,0.5);
+//            wucru.moveSlide(0.5, 5);
+//            wucru.straight(1,10,0.3);
+//            wucru.moveClaw();
+//            wucru.straight(-1,10,0.3);
+//            wucru.moveSlide(-0.5, 5);
+//
+//
+//            wucru.strafe(1,14,0.4);
+//            /*
+//            wucru.strafe(1,27,0.8);
+//            wucru.resetEncoders();
+//            wucru.straight(1, 30, 0.8);
+//             */
+//        }
     }
 }
