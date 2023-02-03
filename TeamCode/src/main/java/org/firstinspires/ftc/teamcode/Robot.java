@@ -277,13 +277,10 @@ public class Robot extends SampleMecanumDrive {
         slide1.setPower(0);
         slide2.setPower(0);
     }
-    public void slideslides(double power){
+
+    public void setSlidePower(double power){
         slide1.setPower(power);
         slide2.setPower(power);
-    }
-    public void slideZero(){
-        slide1.setPower(0);
-        slide2.setPower(0);
     }
 
     public boolean slideUpdate() {

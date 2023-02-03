@@ -17,21 +17,11 @@ public class AutonParkTimeBased extends LinearOpMode {
         wucru.initOpenCV();
         waitForStart();
         wucru.resetEncoders();
-//        telemetry.addData("o3", DetectorPipeline.orangeCnt);
-//        telemetry.addData("o3", DetectorPipeline.purpleCnt);
-//        telemetry.addData("o3", DetectorPipeline.greenCnt);
-//        telemetry.addData(AutonParkTimeBased"sleeveColor", DetectorPipeline.sleeveColor);
-//        telemetry.addData("c1", detector.pixelColor[0]);
-//        telemetry.addData("c2", detector.pixelColor[1]);
-//        telemetry.addData("c3", detector.pixelColor[2]);
-//        telemetry.addData("c4", detector.pixelColor[3]);
 
         int sleeveColor = DetectorPipeline.sleeveColor;
 
-//        wucru.moveClaw();
-//        wucru.moveClaw();
         sleep(1000);
-//        wucru.moveSlide(0.4,1.4);
+
         telemetry.addData("detected: ", sleeveColor);
         sleep(1000);
         if (sleeveColor == 1){

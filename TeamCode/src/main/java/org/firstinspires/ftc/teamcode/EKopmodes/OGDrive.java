@@ -62,13 +62,13 @@ public class OGDrive extends LinearOpMode {
             telemetry.update();
             // slides
             if (gamepad2.right_trigger>0){
-                bot.slideslides(gamepad2.right_trigger*0.4);
+                bot.setSlidePower(gamepad2.right_trigger*0.4);
             }
             if(gamepad2.left_trigger>0){
-                bot.slideslides(-gamepad2.left_trigger*0.4);
+                bot.setSlidePower(-gamepad2.left_trigger*0.4);
             }
             if(gamepad2.left_trigger==0 && gamepad2.right_trigger==0){
-                bot.slideZero();
+                bot.setSlidePower(0);
             }
             //servo
             if (gamepad2.a && !lateA){

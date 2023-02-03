@@ -17,14 +17,7 @@ public class LeftAutonCycle extends LinearOpMode {
         wucru.initOpenCV();
         waitForStart();
         wucru.resetEncoders();
-//        telemetry.addData("o3", DetectorPipeline.orangeCnt);
-//        telemetry.addData("o3", DetectorPipeline.purpleCnt);
-//        telemetry.addData("o3", DetectorPipeline.greenCnt);
-//        telemetry.addData(AutonPark"sleeveColor", DetectorPipeline.sleeveColor);
-//        telemetry.addData("c1", detector.pixelColor[0]);
-//        telemetry.addData("c2", detector.pixelColor[1]);
-//        telemetry.addData("c3", detector.pixelColor[2]);
-//        telemetry.addData("c4", detector.pixelColor[3]);
+
         telemetry.update();
         int sleeveColor = DetectorPipeline.sleeveColor;
 
