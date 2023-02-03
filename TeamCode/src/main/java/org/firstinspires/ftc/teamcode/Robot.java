@@ -223,7 +223,7 @@ public class Robot extends SampleMecanumDrive {
         timer.reset();
         while(timer.seconds() < time) {
             leftBack.setPower(speed*direction);
-            leftFront.setPower(speed*direction);
+            leftFront.setPower(0.5*speed*direction);
             rightBack.setPower(speed*direction);
             rightFront.setPower(speed*direction);
         }
@@ -258,6 +258,7 @@ public class Robot extends SampleMecanumDrive {
             leftFront.setPower(0.5*speed*direction);
             rightBack.setPower(-speed*direction);
             rightFront.setPower(-speed*direction);
+
         }
         leftBack.setPower(0);
         leftFront.setPower(0);

@@ -26,43 +26,79 @@ public class LeftAuton extends LinearOpMode {
 //        telemetry.addData("c3", detector.pixelColor[2]);
 //        telemetry.addData("c4", detector.pixelColor[3]);
         telemetry.update();
-        int sleeveColor = DetectorPipeline.sleeveColor;
+        int sleeveColor = 1;
 
 //        wucru.moveClaw();
 //        wucru.moveClaw();
 
 //        if (sleeveColor == 1){
             wucru.resetEncoders();
-            wucru.straight(1,11,0.2);
-            sleep(1000);
-            wucru.moveSlide(0.6,2.5);
-            wucru.turnTo(3*Math.PI/4, 0.2);
-            wucru.resetEncoders();
-            sleep(1000);
-            wucru.straight(1,4, 0.15);
 
+            //go forward and turn to junction
+            wucru.straight(1,12,0.2);
+            wucru.moveSlide(0.6,1.5);
+            wucru.turnTo(-Math.PI/4, 0.2);
+
+            //move to junction, drop cone, retreat
+            wucru.resetEncoders();
+            sleep(200);
+            wucru.straight(1,2.5, 0.15);
             wucru.moveSlide(-0.2,0.5);
             wucru.resetEncoders();
-            sleep(1000);
-            wucru.straight(-1, 4, 0.15);
+            sleep(100);
+            wucru.straight(-1, 2.5, 0.15);
             wucru.resetEncoders();
             sleep(1000);
+
+            //go to stack
             wucru.turnTo(0, 0.16);
             wucru.moveSlide(-0.4, 1.2);
-            sleep(2000);
-            wucru.moveSlide(-0.4, 0.6);
-            sleep(2000);
-            wucru.moveSlide(-0.2, 1);
             wucru.resetEncoders();
-            wucru.straight(1,6,0.2);
-            sleep(1000);
+            wucru.straight(1,5,0.15);
+            sleep(500);
             wucru.turnTo(-Math.PI/2,-0.15);
-            sleep(1000);
+            sleep(500);
             wucru.resetEncoders();
             wucru.straightWtime(1, 0.1, 2);
-            sleep(1000);
+            sleep(500);
+
+            //go to high junction
             wucru.resetEncoders();
-            wucru.straightWtime(-1,0.1, 2);
+            wucru.straight(-1,9, 0.2);
+            sleep(500);
+            wucru.turnTo(0.12,0.12);
+            wucru.moveSlide(0.6, 1.8);
+            wucru.resetEncoders();
+            wucru.straight(1,5.5,0.12);
+            sleep(500);
+
+
+            //retreat to park
+            wucru.moveSlide(-0.2, 0.3);
+            wucru.resetEncoders();
+            wucru.straight(-1, 2.5,0.15);
+            wucru.resetEncoders();
+            wucru.strafe(-1, 2.2, 0.2);
+
+            if(sleeveColor==1){
+                wucru.turnTo(0, 0.15);
+                wucru.resetEncoders();
+                wucru.strafe(-1, 7, 0.16);
+                wucru.moveSlide(-0.2, 5);
+            }
+
+            else if(sleeveColor==3){
+                wucru.turnTo(0, 0.15);
+                wucru.resetEncoders();
+                wucru.straight(1,3,0.15);
+                wucru.strafe(1, 7, 0.16);
+                wucru.moveSlide(-0.2, 5);
+            }
+
+            else{
+                wucru.moveSlide(-0.2, 5);
+            }
+
 //            wucru.strafe(1, 14,0.5);
 //            wucru.moveSlide(0.5, 5);
 //            wucru.straight(1,10,0.3);
