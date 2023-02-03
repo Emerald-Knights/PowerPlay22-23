@@ -26,12 +26,9 @@ public class LeftAuton extends LinearOpMode {
 //        telemetry.addData("c3", detector.pixelColor[2]);
 //        telemetry.addData("c4", detector.pixelColor[3]);
         telemetry.update();
+        //temporarily set sleevecolor because openCV no work at olive's hous
         int sleeveColor = 1;
 
-//        wucru.moveClaw();
-//        wucru.moveClaw();
-
-//        if (sleeveColor == 1){
             wucru.resetEncoders();
 
             //go forward and turn to junction
@@ -99,57 +96,5 @@ public class LeftAuton extends LinearOpMode {
                 wucru.moveSlide(-0.2, 5);
             }
 
-//            wucru.strafe(1, 14,0.5);
-//            wucru.moveSlide(0.5, 5);
-//            wucru.straight(1,10,0.3);
-//            wucru.moveClaw();
-//            wucru.straight(-1,10,0.3);
-//            wucru.moveSlide(-0.5, 5);
-
-
-//            wucru.strafe(-1,54,0.4);
-            /*
-            og code
-            wucru.strafe(-1,27,0.5);
-            wucru.resetEncoders();
-            wucru.straight(1,30,0.5);
-             */
-//        }
-//        if(sleeveColor == 2){
-//            wucru.resetEncoders();
-//            wucru.straight(1,30,0.5);
-//            wucru.strafe(1, 14,0.5);
-//            wucru.moveSlide(0.5, 5);
-//            wucru.straight(1,10,0.3);
-//            wucru.moveClaw();
-//            wucru.straight(-1,10,0.3);
-//            wucru.moveSlide(-0.5, 5);
-//
-//
-//            wucru.strafe(-1,27,0.4);
-//
-//            /*
-//            wucru.straight(1, 28, 0.8);
-//            */
-//        }
-//
-//        if (sleeveColor == 3){
-//            wucru.resetEncoders();
-//            wucru.straight(1,60,0.5);
-//            wucru.strafe(1, 14,0.5);
-//            wucru.moveSlide(0.5, 5);
-//            wucru.straight(1,10,0.3);
-//            wucru.moveClaw();
-//            wucru.straight(-1,10,0.3);
-//            wucru.moveSlide(-0.5, 5);
-//
-//
-//            wucru.strafe(1,14,0.4);
-//            /*
-//            wucru.strafe(1,27,0.8);
-//            wucru.resetEncoders();
-//            wucru.straight(1, 30, 0.8);
-//             */
-//        }
     }
 }
