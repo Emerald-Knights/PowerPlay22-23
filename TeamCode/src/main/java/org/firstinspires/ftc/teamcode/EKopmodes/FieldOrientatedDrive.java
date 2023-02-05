@@ -12,7 +12,8 @@ public class FieldOrientatedDrive extends LinearOpMode {
         DRIVE,
         CLAW,
         SLIDE,
-        PID
+        PID,
+        RNP
     }
 
     @Override
@@ -22,6 +23,7 @@ public class FieldOrientatedDrive extends LinearOpMode {
         waitForStart();
 
         boolean clawLate = false;
+        boolean xLate = false;
         while (opModeIsActive()) {
 
             switch (robotState){
@@ -49,6 +51,8 @@ public class FieldOrientatedDrive extends LinearOpMode {
                         robotState = RobotState.CLAW;
                     } else if(gamepad2.right_trigger > 0.1 || gamepad2.left_trigger > 0.1) {
                         robotState = RobotState.SLIDE;
+                    } else if(gamepad2.x && !xLate){
+                        robotState = RobotState.RNP;
                     }
                     break;
                 case SLIDE:
@@ -59,12 +63,16 @@ public class FieldOrientatedDrive extends LinearOpMode {
                     wucru.moveClaw();
                     robotState = RobotState.DRIVE;
                     break;
+                case RNP:
+                    wucru.moveRack();
+                    robotState = RobotState.DRIVE;
+                    break;
 
             }
 
             //set late
             clawLate = gamepad2.b;
-
+            xLate = gamepad2.x;
             telemetry.addData("servo", wucru.leftClaw.getPosition());
             telemetry.addData("rservo", wucru.rightClaw.getPosition());
             telemetry.update();

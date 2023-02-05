@@ -24,11 +24,13 @@ public class Robot extends SampleMecanumDrive {
 
     public boolean RUN_USING_ENCODER;
     private boolean clawClosed = false;
+    private boolean rnpUp = false;
 
     public DcMotorEx leftBack, leftFront, rightBack, rightFront;
     DcMotor test;
     public Servo leftClaw;
     public Servo rightClaw;
+    public Servo rackAndPinion;
     DcMotor slide1, slide2;
 
     public DistanceSensor distance;
@@ -61,7 +63,7 @@ public class Robot extends SampleMecanumDrive {
 
         slide1 = hardwareMap.get(DcMotor.class, "slide1");
         slide2 = hardwareMap.get(DcMotor.class, "slide2");
-        distance = hardwareMap.get(DistanceSensor.class, "distance");
+        rackAndPinion = hardwareMap.get(Servo.class, "r&p");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         //test = hardwareMap.get(DcMotor.class, "test");
@@ -120,7 +122,7 @@ public class Robot extends SampleMecanumDrive {
 
     //teleop methods
     public void moveClaw() {
-        if(!clawClosed) {
+        if(clawClosed) {
             rightClaw.setPosition(0.365);
             leftClaw.setPosition(0.07);
         } else {
@@ -130,15 +132,20 @@ public class Robot extends SampleMecanumDrive {
         clawClosed = !clawClosed;
     }
 
+    public void overextendClaw() {
+        rightClaw.setPosition(0.7);
+        leftClaw.setPosition(0);
+        clawClosed = false;
+    }
+
     //auton methods
-    public static double angleWrap(double angle){
-        while(angle>Math.PI){
-            angle-=2*Math.PI;
+    public static double angleCompare(double angle1, double angle2){
+        double greaterAngle = Math.max(angle1, angle2);
+        double smallerAngle = Math.min(angle1, angle2);
+        if((greaterAngle - smallerAngle) / (Math.PI * 2) > 1) {
+            greaterAngle -= (int)((greaterAngle - smallerAngle) / (Math.PI * 2)) * (Math.PI * 2);
         }
-        while(angle<-Math.PI){
-            angle+=2*Math.PI;
-        }
-        return angle;
+        return Math.min(greaterAngle - smallerAngle, Math.abs(greaterAngle - Math.PI * 2 - smallerAngle));
     }
 
     public static double factorial(int num){
@@ -208,7 +215,7 @@ public class Robot extends SampleMecanumDrive {
 
         while(Math.abs(averageTicks() * TICKS_TO_INCH_FORWARD) < Math.abs(distance)){
             leftBack.setPower(speed*direction);
-            leftFront.setPower(0.5*speed*direction);
+            leftFront.setPower(speed*direction);
             rightBack.setPower(speed*direction);
             rightFront.setPower(speed*direction);
         }
@@ -251,11 +258,13 @@ public class Robot extends SampleMecanumDrive {
     //1 is right, -1 is left
     public void turnTo(double targetAngle, double speed) {
         double direction;
-        if(targetAngle > imu.getAngularOrientation().firstAngle && targetAngle < angleWrap(imu.getAngularOrientation().firstAngle + Math.PI)) {direction = -1;}
-        else{ direction = 1;}
-        while(angleWrap(Math.abs(imu.getAngularOrientation().firstAngle - targetAngle)) > 0.02){
+        if(angleCompare(targetAngle + Math.PI/2, imu.getAngularOrientation().firstAngle) > angleCompare(targetAngle - Math.PI/2, imu.getAngularOrientation().firstAngle))
+            direction = -1;
+        else
+            direction = 1;
+        while(angleCompare(imu.getAngularOrientation().firstAngle, targetAngle) > 0.02){
             leftBack.setPower(speed*direction);
-            leftFront.setPower(0.5*speed*direction);
+            leftFront.setPower(speed*direction);
             rightBack.setPower(-speed*direction);
             rightFront.setPower(-speed*direction);
 
@@ -268,14 +277,38 @@ public class Robot extends SampleMecanumDrive {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void turnTo(double targetAngle, double speed, int direction) {
+        while(angleCompare(imu.getAngularOrientation().firstAngle, targetAngle) > 0.02){
+            leftBack.setPower(speed*direction);
+            leftFront.setPower(speed*direction);
+            rightBack.setPower(-speed*direction);
+            rightFront.setPower(-speed*direction);
+
+        }
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
     public void moveSlide(double vector, double time) {
         timer.reset();
         while(timer.seconds() < time) {
             slide1.setPower(vector);
             slide2.setPower(vector);
         }
-        slide1.setPower(0);
-        slide2.setPower(0);
+        slide1.setPower(0.2);
+        slide2.setPower(0.2);
+    }
+    public void moveRack(){
+        if (rnpUp){
+            rackAndPinion.setPosition(0);
+        }
+        else{
+            rackAndPinion.setPosition(1);
+        }
+        rnpUp = !rnpUp;
     }
 
     public void setSlidePower(double power){
