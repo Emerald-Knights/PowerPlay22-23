@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -30,8 +31,7 @@ public class Robot extends SampleMecanumDrive {
     DcMotor test;
     public Servo leftClaw;
     public Servo rightClaw;
-    public Servo rackAndPinion;
-    DcMotor slide1, slide2;
+    public DcMotor slide1, slide2;
 
     public DistanceSensor distance;
     public BNO055IMU imu;
@@ -40,6 +40,7 @@ public class Robot extends SampleMecanumDrive {
 
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
+    Telemetry telemetry;
 
     public final int DIRECTION = 1;
     final static double TICKS_TO_INCH_FORWARD = 0.0265;
@@ -50,7 +51,7 @@ public class Robot extends SampleMecanumDrive {
     PIDController slidePID;
     int currSlidePosition = 0;
     public int targetSlidePosition = 0;
-    int[] slidePosition = new int[]{0, 0, 0, 0};
+    int[] slidePosition = new int[]{200, 0, 0, 0};
     InterpLUT maxVelLut = new InterpLUT();
     double maxVel = 1;
 
@@ -63,7 +64,7 @@ public class Robot extends SampleMecanumDrive {
 
         slide1 = hardwareMap.get(DcMotor.class, "slide1");
         slide2 = hardwareMap.get(DcMotor.class, "slide2");
-        rackAndPinion = hardwareMap.get(Servo.class, "r&p");
+
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         //test = hardwareMap.get(DcMotor.class, "test");
@@ -72,10 +73,12 @@ public class Robot extends SampleMecanumDrive {
         //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
-//        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide1.setDirection(DcMotorEx.Direction.REVERSE);
 //        slide2.setDirection(DcMotorEx.Direction.REVERSE);
 
@@ -87,11 +90,18 @@ public class Robot extends SampleMecanumDrive {
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
+        this.telemetry = telemetry;
 
         //constants to tune
-        slidePID = new PIDController(0, 0, 0);
-        maxVelLut.add(0, 1);
-        maxVelLut.add(10, 1);
+        slidePID = new PIDController(1, 0, 0);
+        maxVelLut.add(-0.1, 1);
+        maxVelLut.add(1000000, 1);
+    }
+
+    public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode, Telemetry telemetry) {
+        super(hardwareMap);
+//        Robot(hardwareMap, linearOpMode);
+        this.telemetry = telemetry;
     }
 
     public void initOpenCV() {
@@ -316,9 +326,14 @@ public class Robot extends SampleMecanumDrive {
         slide2.setPower(power);
     }
 
+    public void setSlidePower(double vector) {
+        slide1.setPower(vector);
+        slide2.setPower(vector);
+    }
+
     public boolean slideUpdate() {
         float target = slidePosition[targetSlidePosition];
-        maxVel = maxVelLut.get(slide1.getCurrentPosition());
+        maxVel = 1;
         if ((target - slide1.getCurrentPosition()) > maxVel){
             double pow = slidePID.logUpdate(slide1.getCurrentPosition() + maxVel, slide1.getCurrentPosition(), this.linearOpMode.telemetry, "slide");
             if(pow < 0.8) {

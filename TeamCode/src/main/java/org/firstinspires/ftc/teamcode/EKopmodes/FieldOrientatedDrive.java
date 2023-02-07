@@ -34,18 +34,20 @@ public class FieldOrientatedDrive extends LinearOpMode {
                     double rx=-gamepad1.right_stick_x;
                     double currentAngle = wucru.imu.getAngularOrientation().firstAngle;
 
+                    double maxInput = Math.max(Math.abs(lx), Math.abs(ly));
                     double direction = Math.atan2(-ly, lx); //set direction
-                    double lf = Math.sin(currentAngle + Math.PI*3/4 + direction);
-                    double rf = Math.sin(currentAngle + Math.PI*5/4 + direction);
+                    double lf = Math.sin(currentAngle + Math.PI*3/4 + direction) * maxInput;
+                    double rf = Math.sin(currentAngle + Math.PI*5/4 + direction) * maxInput;
                     double turnPower = -rx; //turn power can be changed to a magnitude and direction
-
-                    double translateRatio = Math.pow(Math.max(rf, lf), 2)/(turnPower+Math.max(rf,lf));
-                    double rotateRatio = Math.pow(turnPower, 2)/(turnPower+Math.max(rf, lf));
-
-                    wucru.leftFront.setPower(0.8 * ((translateRatio * lf) + (turnPower * rotateRatio)));
-                    wucru.leftBack.setPower(0.8 * ((translateRatio * rf) + (turnPower * rotateRatio)));
-                    wucru.rightFront.setPower(0.8 * ((translateRatio * rf) - (turnPower * rotateRatio)));
-                    wucru.rightBack.setPower(0.8 * ((translateRatio * lf) - (turnPower * rotateRatio)));
+                    double maxTrans = Math.max(Math.abs(rf), Math.abs(lf));
+                    double denominator = Math.abs(turnPower) + maxTrans;
+                    double transRatio = maxTrans / denominator;
+                    double rotRatio = Math.abs(turnPower) / denominator;
+                    
+                    wucru.leftFront.setPower(0.8 * ((transRatio * lf) + (turnPower * rotRatio)));
+                    wucru.leftBack.setPower(0.8 * ((transRatio * rf) + (turnPower * rotRatio)));
+                    wucru.rightFront.setPower(0.8 * ((transRatio * rf) - (turnPower * rotRatio)));
+                    wucru.rightBack.setPower(0.8 * ((transRatio * lf) - (turnPower * rotRatio)));
 
                     if(gamepad2.b && !clawLate){
                         robotState = RobotState.CLAW;
