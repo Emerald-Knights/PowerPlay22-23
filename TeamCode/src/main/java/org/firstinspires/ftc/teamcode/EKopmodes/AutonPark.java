@@ -20,7 +20,7 @@ public class AutonPark extends LinearOpMode {
 //        telemetry.addData("o3", DetectorPipeline.orangeCnt);
 //        telemetry.addData("o3", DetectorPipeline.purpleCnt);
 //        telemetry.addData("o3", DetectorPipeline.greenCnt);
-        telemetry.addData("sleeveColor", DetectorPipeline.sleeveColor);
+//        telemetry.addData(AutonPark"sleeveColor", DetectorPipeline.sleeveColor);
 //        telemetry.addData("c1", detector.pixelColor[0]);
 //        telemetry.addData("c2", detector.pixelColor[1]);
 //        telemetry.addData("c3", detector.pixelColor[2]);

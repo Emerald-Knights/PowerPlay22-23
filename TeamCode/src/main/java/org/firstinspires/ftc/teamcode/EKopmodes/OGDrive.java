@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.EKopmodes;
 
+import com.acmerobotics.dashboard.message.redux.StartOpMode;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -19,11 +20,10 @@ public class OGDrive extends LinearOpMode {
         boolean lateA = false;
         while (opModeIsActive()) {
             //drive
-
             // set the gamepad variables
-            lx = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-            ly = -gamepad1.left_stick_y;
+            lx = gamepad1.left_stick_x * 0.65;
+            rx = gamepad1.right_stick_x * 0.5;
+            ly = -gamepad1.left_stick_y * 0.65;
             // arithmetic to get motor values - not scaled
             double lf = ly + rx + lx;
             double lb = ly + rx - lx;
@@ -36,19 +36,48 @@ public class OGDrive extends LinearOpMode {
             if (max == 0) {
                 ratio = 0;
             } else {
-                ratio = .8 * magnitude / max;
+                ratio = .3 * magnitude / max;
             }
             // sets the motor power
-            bot.leftFront.setPower(lf * ratio);
-            bot.leftBack.setPower(lb * ratio);
-            bot.rightFront.setPower(rf * ratio);
-            bot.rightBack.setPower(rb * ratio);
+            if (magnitude > 0.18) {
+                bot.leftFront.setPower(lf * ratio*0.8);
+                bot.leftBack.setPower(lb * ratio*0.8);
+                bot.rightFront.setPower(rf * ratio*0.8);
+                bot.rightBack.setPower(rb * ratio*0.8);
+            }
+            else{
+                bot.leftFront.setPower(0);
+                bot.leftBack.setPower(0);
+                bot.rightFront.setPower(0);
+                bot.rightBack.setPower(0);
+            }
+            //telemetry.addData("lb encoder:", bot.leftBack.getCurrentPosition());
+            telemetry.addData("y val:", gamepad1.left_stick_y);
+            telemetry.addData("lb:",lb);
+            telemetry.addData("lf",lf);
+            telemetry.addData("rf",rf);
+            telemetry.addData("rb",rb);
 
 
-            //arm/wrist
-
+            telemetry.update();
+            // slides
+            if (gamepad2.right_trigger>0){
+                bot.setSlidePower(gamepad2.right_trigger*0.4);
+            }
+            if(gamepad2.left_trigger>0){
+                bot.setSlidePower(-gamepad2.left_trigger*0.4);
+            }
+            if(gamepad2.left_trigger==0 && gamepad2.right_trigger==0){
+                bot.setSlidePower(0);
+            }
+            //servo
+            if (gamepad2.a && !lateA){
+                bot.moveClaw();
+            }
 
             lateA = gamepad2.a;
+
+
         }
     }
 }

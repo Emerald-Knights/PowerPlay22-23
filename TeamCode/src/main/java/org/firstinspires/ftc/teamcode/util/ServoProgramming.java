@@ -26,6 +26,7 @@ public class ServoProgramming extends LinearOpMode {
             }
             wucru.leftClaw.setPosition(currentPos);
             telemetry.addData("Current Position", currentPos);
+            telemetry.addData("Servo: ", wucru.leftClaw.getPosition());
             telemetry.update();
         }
     }

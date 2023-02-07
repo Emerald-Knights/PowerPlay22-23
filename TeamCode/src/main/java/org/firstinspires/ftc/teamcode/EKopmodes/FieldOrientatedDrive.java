@@ -12,7 +12,8 @@ public class FieldOrientatedDrive extends LinearOpMode {
         DRIVE,
         CLAW,
         SLIDE,
-        PID
+        PID,
+        RNP
     }
 
     @Override
@@ -22,7 +23,7 @@ public class FieldOrientatedDrive extends LinearOpMode {
         waitForStart();
 
         boolean clawLate = false;
-        boolean PIDisActive = false;
+        boolean xLate = false;
         while (opModeIsActive()) {
 
             switch (robotState){
@@ -42,57 +43,30 @@ public class FieldOrientatedDrive extends LinearOpMode {
                     double denominator = Math.abs(turnPower) + maxTrans;
                     double transRatio = maxTrans / denominator;
                     double rotRatio = Math.abs(turnPower) / denominator;
-
-                    telemetry.addData("turnPower", turnPower);
-                    telemetry.addData("translateRatio", transRatio);
-                    telemetry.addData("rotateRatio", rotRatio);
-                    telemetry.addData("sum of ratios", transRatio + rotRatio);
-                    telemetry.addData("turnPower", turnPower);
-                    telemetry.addData("lf", lf);
-                    telemetry.addData("rf", rf);
-                    telemetry.addData("leftFront", wucru.leftFront.getPower());
-                    telemetry.addData("rightFront", wucru.rightFront.getPower());
-                    telemetry.addData("leftBack", wucru.leftBack.getPower());
-                    telemetry.addData("rightBack", wucru.rightBack.getPower());
+                    
                     wucru.leftFront.setPower(0.8 * ((transRatio * lf) + (turnPower * rotRatio)));
                     wucru.leftBack.setPower(0.8 * ((transRatio * rf) + (turnPower * rotRatio)));
                     wucru.rightFront.setPower(0.8 * ((transRatio * rf) - (turnPower * rotRatio)));
                     wucru.rightBack.setPower(0.8 * ((transRatio * lf) - (turnPower * rotRatio)));
 
-//                    if (gamepad2.dpad_down){
-//                        robotState = RobotState.SLIDE;
-//                        wucru.targetSlidePosition = 0;
-//                    }
-//                    else if(gamepad2.dpad_left){
-//                        robotState = RobotState.SLIDE;
-//                        wucru.targetSlidePosition = 1;
-//                    }
-//                    else if(gamepad2.dpad_up){
-//                        robotState = RobotState.SLIDE;
-//                        wucru.targetSlidePosition = 2;
-//                    }
-//                    else if(gamepad2.dpad_right){
-//                        robotState = RobotState.SLIDE;
-//                        wucru.targetSlidePosition = 3;
-//                    }
-//                    else if(PIDisActive){
-//                        robotState = RobotState.PID;
-//                    }
-                    wucru.setSlidePower(gamepad2.right_trigger * 0.8 + gamepad2.left_trigger * -0.8);
                     if(gamepad2.b && !clawLate){
                         robotState = RobotState.CLAW;
+                    } else if(gamepad2.right_trigger > 0.1 || gamepad2.left_trigger > 0.1) {
+                        robotState = RobotState.SLIDE;
+                    } else if(gamepad2.x && !xLate){
+                        robotState = RobotState.RNP;
                     }
                     break;
-//                case PID:
-//                    PIDisActive = !wucru.slideUpdate();
-//                    robotState = RobotState.DRIVE;
-//                    break;
-//                case SLIDE:
-//                    PIDisActive = true;
-//                    robotState = RobotState.PID;
-//                    break;
+                case SLIDE:
+                    wucru.setSlidePower(gamepad2.right_trigger - gamepad2.left_trigger);
+                    robotState = RobotState.DRIVE;
+                    break;
                 case CLAW:
                     wucru.moveClaw();
+                    robotState = RobotState.DRIVE;
+                    break;
+                case RNP:
+                    wucru.moveRack();
                     robotState = RobotState.DRIVE;
                     break;
 
@@ -100,7 +74,7 @@ public class FieldOrientatedDrive extends LinearOpMode {
 
             //set late
             clawLate = gamepad2.b;
-
+            xLate = gamepad2.x;
             telemetry.addData("servo", wucru.leftClaw.getPosition());
             telemetry.addData("rservo", wucru.rightClaw.getPosition());
             telemetry.update();
