@@ -187,22 +187,33 @@ public class MeepMeepTesting {
 //                                .lineTo(new Vector2d(-60,-35))
 //                                .build()
 //                );
-        RoadRunnerBotEntity altblue = new DefaultBotBuilder(meepMeep)
+//        RoadRunnerBotEntity altblue = new DefaultBotBuilder(meepMeep)
+//                .setColorScheme(new ColorSchemeBlueDark())
+//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+//                .followTrajectorySequence(drive ->
+//                        drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
+//                                .lineToLinearHeading(new Pose2d(-34, 32, Math.toRadians(-57)))
+//                                .build()
+//                );
+
+        RoadRunnerBotEntity blueCycle = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
-                                .lineToLinearHeading(new Pose2d(-34, 32, Math.toRadians(-57)))
+                                .lineToSplineHeading(new Pose2d(-32, 10, Math.toRadians(315)))
+
+
+
                                 .build()
                 );
-
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_KAI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
-                .addEntity(altblue)
+                .addEntity(blueCycle)
 
                 .start();
     }
