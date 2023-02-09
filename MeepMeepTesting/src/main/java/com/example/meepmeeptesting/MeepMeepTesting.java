@@ -201,10 +201,9 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
-                                .lineToSplineHeading(new Pose2d(-32, 10, Math.toRadians(315)))
+                                .lineToSplineHeading(new Pose2d(-35, 10, Math.toRadians(315)))
 
-
-
+                                .splineToSplineHeading(new Pose2d(-70, 12, Math.toRadians(50)), Math.toRadians(-160))
                                 .build()
                 );
 
