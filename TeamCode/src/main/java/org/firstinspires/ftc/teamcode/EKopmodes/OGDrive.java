@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @TeleOp (name = "DazzlingIdealCapableKnowledgeableSoftware")
@@ -57,7 +58,8 @@ public class OGDrive extends LinearOpMode {
             telemetry.addData("lf",lf);
             telemetry.addData("rf",rf);
             telemetry.addData("rb",rb);
-
+            telemetry.addData("Distance(m): ", bot.distance.getDistance(DistanceUnit.METER));
+            telemetry.addData("Distance(in): ", bot.distance.getDistance(DistanceUnit.INCH));
 
             telemetry.update();
             // slides

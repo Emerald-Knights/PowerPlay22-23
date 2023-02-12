@@ -68,7 +68,7 @@ public class Robot extends SampleMecanumDrive {
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         //test = hardwareMap.get(DcMotor.class, "test");
-
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
@@ -311,25 +311,22 @@ public class Robot extends SampleMecanumDrive {
         slide1.setPower(0.2);
         slide2.setPower(0.2);
     }
-    public void moveRack(){
-        if (rnpUp){
-            rackAndPinion.setPosition(0);
-        }
-        else{
-            rackAndPinion.setPosition(1);
-        }
-        rnpUp = !rnpUp;
-    }
+//    public void moveRack(){
+//        if (rnpUp){
+//            rackAndPinion.setPosition(0);
+//        }
+//        else{
+//            rackAndPinion.setPosition(1);
+//        }
+//        rnpUp = !rnpUp;
+//    }
 
     public void setSlidePower(double power){
         slide1.setPower(power);
         slide2.setPower(power);
     }
 
-    public void setSlidePower(double vector) {
-        slide1.setPower(vector);
-        slide2.setPower(vector);
-    }
+
 
     public boolean slideUpdate() {
         float target = slidePosition[targetSlidePosition];
