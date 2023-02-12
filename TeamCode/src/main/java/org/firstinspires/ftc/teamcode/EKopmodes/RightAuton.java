@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.EKopmodes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.DetectorPipeline;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @Autonomous(name="RightAuton", group="auto")

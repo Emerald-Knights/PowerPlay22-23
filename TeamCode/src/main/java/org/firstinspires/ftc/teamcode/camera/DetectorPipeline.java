@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.camera;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;

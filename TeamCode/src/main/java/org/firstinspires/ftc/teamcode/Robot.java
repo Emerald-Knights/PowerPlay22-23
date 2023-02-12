@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.camera.DetectorPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -310,20 +311,6 @@ public class Robot extends SampleMecanumDrive {
         }
         slide1.setPower(0.2);
         slide2.setPower(0.2);
-    }
-    public void moveRack(){
-        if (rnpUp){
-            rackAndPinion.setPosition(0);
-        }
-        else{
-            rackAndPinion.setPosition(1);
-        }
-        rnpUp = !rnpUp;
-    }
-
-    public void setSlidePower(double power){
-        slide1.setPower(power);
-        slide2.setPower(power);
     }
 
     public void setSlidePower(double vector) {
