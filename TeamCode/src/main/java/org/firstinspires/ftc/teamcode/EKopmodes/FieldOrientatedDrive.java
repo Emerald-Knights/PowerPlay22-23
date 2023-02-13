@@ -66,7 +66,7 @@ public class FieldOrientatedDrive extends LinearOpMode {
                     robotState = RobotState.DRIVE;
                     break;
                 case RNP:
-                    wucru.moveRack();
+                    //wucru.moveRack();
                     robotState = RobotState.DRIVE;
                     break;
 
