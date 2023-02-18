@@ -21,14 +21,14 @@ public class OGDrive extends LinearOpMode {
         while (opModeIsActive()) {
             //drive
             // set the gamepad variables
-            lx = gamepad1.left_stick_x * 0.65;
-            rx = gamepad1.right_stick_x * 0.5;
-            ly = -gamepad1.left_stick_y * 0.65;
+            lx = gamepad1.left_stick_x;
+            rx = gamepad1.right_stick_x;
+            ly = -gamepad1.left_stick_y;
             // arithmetic to get motor values - not scaled
-            double lf = ly + rx + lx;
-            double lb = ly + rx - lx;
-            double rf = ly - rx - lx;
-            double rb = ly - rx + lx;
+            double lf = ly - rx - lx;
+            double lb = ly - rx + lx;
+            double rf = ly + rx + lx;
+            double rb = ly + rx - lx;
             // scale the motor values
             double ratio;
             double max = Math.max(Math.max(Math.abs(lb), Math.abs(lf)), Math.max(Math.abs(rb), Math.abs(rf)));
@@ -53,23 +53,30 @@ public class OGDrive extends LinearOpMode {
             }
             //telemetry.addData("lb encoder:", bot.leftBack.getCurrentPosition());
             telemetry.addData("y val:", gamepad1.left_stick_y);
-            telemetry.addData("lb:",lb);
-            telemetry.addData("lf",lf);
-            telemetry.addData("rf",rf);
-            telemetry.addData("rb",rb);
+            telemetry.addData("lb", bot.leftBack.getCurrentPosition());
+            telemetry.addData("lf",bot.leftFront.getCurrentPosition());
+            telemetry.addData("rf",bot.rightFront.getCurrentPosition());
+            telemetry.addData("rb",bot.rightBack.getCurrentPosition());
+            telemetry.addData("lb power", bot.leftBack.getPower());
+            telemetry.addData("lf power", bot.leftFront.getPower());
+            telemetry.addData("rf power", bot.rightFront.getPower());
+            telemetry.addData("rb power", bot.rightBack.getPower());
+            telemetry.addData("firstangle", bot.imu.getAngularOrientation().firstAngle);
+            telemetry.addData("secondangle", bot.imu.getAngularOrientation().secondAngle);
+            telemetry.addData("secondangle", bot.imu.getAngularOrientation().thirdAngle);
 
 
             telemetry.update();
             // slides
-            if (gamepad2.right_trigger>0){
-                bot.setSlidePower(gamepad2.right_trigger*0.4);
-            }
-            if(gamepad2.left_trigger>0){
-                bot.setSlidePower(-gamepad2.left_trigger*0.4);
-            }
-            if(gamepad2.left_trigger==0 && gamepad2.right_trigger==0){
-                bot.setSlidePower(0);
-            }
+//            if (gamepad2.right_trigger>0){
+//                bot.setSlidePower(gamepad2.right_trigger*0.4);
+//            }
+//            if(gamepad2.left_trigger>0){
+//                bot.setSlidePower(-gamepad2.left_trigger*0.4);
+//            }
+//            if(gamepad2.left_trigger==0 && gamepad2.right_trigger==0){
+//                bot.setSlidePower(0);
+//            }
             //servo
             if (gamepad2.a && !lateA){
                 bot.moveClaw();

@@ -79,8 +79,6 @@ public class Robot extends SampleMecanumDrive {
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 //        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
 //        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
-        encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
-
 //        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide1.setDirection(DcMotorEx.Direction.REVERSE);
@@ -95,11 +93,6 @@ public class Robot extends SampleMecanumDrive {
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
         this.telemetry = telemetry;
-
-        //constants to tune
-        slidePID = new PIDController(1, 0, 0);
-        maxVelLut.add(-0.1, 1);
-        maxVelLut.add(1000000, 1);
     }
 
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode, Telemetry telemetry) {
@@ -317,8 +310,8 @@ public class Robot extends SampleMecanumDrive {
     }
 
     public void setSlidePower(double vector) {
-        slide1.setPower(vector);
-        slide2.setPower(vector);
+        //slide1.setPower(vector);
+        //slide2.setPower(vector);
     }
 
     public boolean slideUpdate() {
