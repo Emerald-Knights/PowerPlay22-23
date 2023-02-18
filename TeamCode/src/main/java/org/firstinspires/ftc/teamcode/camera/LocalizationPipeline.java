@@ -17,14 +17,14 @@ public class LocalizationPipeline extends OpenCvPipeline {
         Mat mat = input.clone();
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
         Mat overlay = new Mat();
-        Core.inRange(mat, new Scalar(100, 50, 50), new Scalar(140, 255, 255), overlay);
+        Core.inRange(mat, new Scalar(100, 100, 100), new Scalar(140, 255, 255), overlay); //blue colors
         Mat masked = new Mat();
         Core.bitwise_and(mat, mat, masked, overlay);
         Mat cropped = new Mat();
         Imgproc.cvtColor(masked, cropped, Imgproc.COLOR_HSV2RGB);
 
         Mat edges = new Mat();
-        Imgproc.Canny(cropped, edges, 200, 300);
+        Imgproc.Canny(cropped, edges, 150, 200);
 
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
@@ -43,6 +43,8 @@ public class LocalizationPipeline extends OpenCvPipeline {
         }
 
         //clean up memory
+        //edges.copyTo(input);
+        cropped.release();
         mat.release();
         overlay.release();
         masked.release();
