@@ -24,8 +24,8 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
                                 //setup for cycle + initial drop
-                                .lineToLinearHeading(new Pose2d(-33,8,Math.toRadians(-42)))
-                                .lineToLinearHeading(new Pose2d(-23,0,Math.toRadians(-42)))
+                                .lineToLinearHeading(new Pose2d(-36,11,Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-23.5,11,Math.toRadians(-90)))
 
                                 .build()
                 );
@@ -34,14 +34,35 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueLight())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-23, 0, Math.toRadians(135)))
-                                .lineToLinearHeading(new Pose2d(-35,12,Math.toRadians(135)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
                                 .lineToLinearHeading(new Pose2d(-55,12,Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(-35,12,Math.toRadians(135)))
-                                .lineToLinearHeading(new Pose2d(-23,0,Math.toRadians(135)))
+                                .lineToLinearHeading(new Pose2d(-58,12,Math.toRadians(180)))//small move forward to get cone
+                                .lineToLinearHeading(new Pose2d(-23.5,11,Math.toRadians(-90)))
 
-
-
+                                .build()
+                );
+        RoadRunnerBotEntity blueParkOne = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-12,12,Math.toRadians(180)))
+                                .build()
+                );
+        RoadRunnerBotEntity blueParkTwo = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-35,12,Math.toRadians(180)))
+                                .build()
+                );
+        RoadRunnerBotEntity blueParkThree = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-58,12,Math.toRadians(180)))
                                 .build()
                 );
 
@@ -50,7 +71,7 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
-                .addEntity(blueCycle)
+                .addEntity(blueParkOne)
 
                 .start();
     }
