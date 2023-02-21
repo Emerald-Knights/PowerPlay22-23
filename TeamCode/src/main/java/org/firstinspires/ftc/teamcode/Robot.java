@@ -71,6 +71,7 @@ public class Robot extends SampleMecanumDrive {
 //        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide1.setDirection(DcMotorEx.Direction.REVERSE);
 //        slide2.setDirection(DcMotorEx.Direction.REVERSE);
+        slide = hardwareMap.get(DcMotor.class, "slide");
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
