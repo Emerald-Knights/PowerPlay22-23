@@ -71,7 +71,7 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
-                .addEntity(blueParkOne)
+                .addEntity(blueStart)
 
                 .start();
     }
