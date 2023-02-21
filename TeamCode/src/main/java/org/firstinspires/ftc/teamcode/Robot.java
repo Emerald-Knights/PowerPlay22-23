@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,7 +15,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.camera.DetectorPipeline;
+import org.firstinspires.ftc.teamcode.camera.LocalizationPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -55,6 +60,8 @@ public class Robot extends SampleMecanumDrive {
     InterpLUT maxVelLut = new InterpLUT();
     double maxVel = 1;
 
+    public OpenCvWebcam webcam;
+
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
         super(hardwareMap);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -62,23 +69,24 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        slide1 = hardwareMap.get(DcMotor.class, "slide1");
-        slide2 = hardwareMap.get(DcMotor.class, "slide2");
-
-        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+//        slide1 = hardwareMap.get(DcMotor.class, "slide1");
+//        slide2 = hardwareMap.get(DcMotor.class, "slide2");
+//
+//        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+//        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         //test = hardwareMap.get(DcMotor.class, "test");
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
-        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
+//        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
+//        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
-        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
+//        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide1.setDirection(DcMotorEx.Direction.REVERSE);
 //        slide2.setDirection(DcMotorEx.Direction.REVERSE);
 
@@ -91,21 +99,9 @@ public class Robot extends SampleMecanumDrive {
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
         this.telemetry = telemetry;
-
-        //constants to tune
-        slidePID = new PIDController(1, 0, 0);
-        maxVelLut.add(-0.1, 1);
-        maxVelLut.add(1000000, 1);
-    }
-
-    public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode, Telemetry telemetry) {
-        super(hardwareMap);
-//        Robot(hardwareMap, linearOpMode);
-        this.telemetry = telemetry;
     }
 
     public void initOpenCV() {
-        OpenCvWebcam webcam;
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"),
@@ -113,6 +109,7 @@ public class Robot extends SampleMecanumDrive {
         webcam.setPipeline(new DetectorPipeline());
         webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
         OpenCvWebcam finalWebcam = webcam;
+        FtcDashboard.getInstance().startCameraStream(webcam, 0);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -128,6 +125,13 @@ public class Robot extends SampleMecanumDrive {
 
 
         });
+    }
+
+    public void cameraLocalize() {
+        double dist = distance.getDistance(DistanceUnit.INCH);
+        double x = dist;
+        double y = dist * LocalizationPipeline.RAD_PER_PIXEL;
+        setPoseEstimate(new Pose2d(x, y, imu.getAngularOrientation().firstAngle));
     }
 
     //teleop methods
@@ -302,6 +306,7 @@ public class Robot extends SampleMecanumDrive {
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+    
     public void moveSlide(double vector, double time) {
         timer.reset();
         while(timer.seconds() < time) {
@@ -311,22 +316,11 @@ public class Robot extends SampleMecanumDrive {
         slide1.setPower(0.2);
         slide2.setPower(0.2);
     }
-//    public void moveRack(){
-//        if (rnpUp){
-//            rackAndPinion.setPosition(0);
-//        }
-//        else{
-//            rackAndPinion.setPosition(1);
-//        }
-//        rnpUp = !rnpUp;
-//    }
-
+    
     public void setSlidePower(double power){
         slide1.setPower(power);
         slide2.setPower(power);
     }
-
-
 
     public boolean slideUpdate() {
         float target = slidePosition[targetSlidePosition];

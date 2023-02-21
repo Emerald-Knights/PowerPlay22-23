@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.DetectorPipeline;
+import org.firstinspires.ftc.teamcode.camera.DetectorPipeline;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @Autonomous(name="W-AUTON", group="auto")
