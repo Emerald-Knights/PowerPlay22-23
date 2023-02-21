@@ -287,6 +287,18 @@ public class Robot extends SampleMecanumDrive {
         slide.setTargetPosition(height);
     }
 
+    public void moveSlide(double power, double time) {
+        timer.reset();
+        while(timer.seconds() < time) {
+            slide.setPower(power);
+        }
+        slide.setPower(0);
+    }
+
+    public void setSlidePower(double power) {
+        slide.setPower(power);
+    }
+
     public void turnToJunction() {
         double fx = Math.floor(getPoseEstimate().getX()/24) * 24;
         double fy = Math.floor(getPoseEstimate().getY()/24) * 24;
