@@ -13,26 +13,18 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class TestMotors extends LinearOpMode{
         @Override
         public void runOpMode() throws InterruptedException {
-            Robot wucru = new Robot(hardwareMap, this, telemetry);
+            Robot wucru = new Robot(hardwareMap, this);
             waitForStart();
             boolean lateA = false;
             boolean lateB = false;
             boolean moveSlides = false;
-            wucru.slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            wucru.slide2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             while (opModeIsActive()) {
-                wucru.targetSlidePosition = 1;
                 if(gamepad1.a) {
                     moveSlides = true;
                 } else if(gamepad1.b) {
                     moveSlides = false;
                 }
-                if(moveSlides) {
-                    wucru.slideUpdate();
-                }
                 telemetry.addData("slide status", moveSlides);
-                telemetry.addData("slide1", wucru.slide1.getCurrentPosition());
-                telemetry.addData("slide2", wucru.slide2.getCurrentPosition());
                 lateA = gamepad1.a;
                 telemetry.update();
             }

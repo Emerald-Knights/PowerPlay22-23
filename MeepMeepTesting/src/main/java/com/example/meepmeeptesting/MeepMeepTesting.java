@@ -18,191 +18,60 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
-//        RoadRunnerBotEntity bluebot1 = new DefaultBotBuilder(meepMeep)
-//                .setColorScheme(new ColorSchemeBlueLight())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-//                .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
-//                                .addDisplacementMarker(15, () -> {
-//                                    //start moving slides
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, 8, Math.toRadians(-45)))
-//                                .forward(5)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop thingy and start moving slide down
-//                                })
-//                                .back(10)
-//                                .splineTo(new Vector2d(-60, 12), Math.toRadians(180))
-//                                .addDisplacementMarker(() -> {
-//                                    //pick up cone on top of stack and start moving slide up
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, 16, Math.toRadians(45)))
-//                                .forward(5)
-//                                .back(10)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop cone
-//                                })
-//                                .lineToSplineHeading(new Pose2d(-35, 35, Math.toRadians(0)))
-//                                .build()
-//                );
-//
-//        RoadRunnerBotEntity bluebot2 = new DefaultBotBuilder(meepMeep)
-//                .setColorScheme(new ColorSchemeBlueLight())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-//                .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
-//                                .addDisplacementMarker(15, () -> {
-//                                    //start moving slides
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, 8, Math.toRadians(-45)))
-//                                .forward(5)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop thingy and start moving slide down
-//                                })
-//                                .back(10)
-//                                .splineTo(new Vector2d(-60, 12), Math.toRadians(180))
-//                                .addDisplacementMarker(() -> {
-//                                    //pick up cone on top of stack and start moving slide up
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, 16, Math.toRadians(45)))
-//                                .forward(5)
-//                                .back(10)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop cone
-//                                })
-//                                .lineToSplineHeading(new Pose2d(-35, 35, Math.toRadians(0)))
-//                                .lineTo(new Vector2d(-12,35))
-//                                .build()
-//                );
-//
-//        RoadRunnerBotEntity bluebot3 = new DefaultBotBuilder(meepMeep)
-//                .setColorScheme(new ColorSchemeBlueLight())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-//                .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
-//                                .addDisplacementMarker(15, () -> {
-//                                    //start moving slides
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, 8, Math.toRadians(-45)))
-//                                .forward(5)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop thingy and start moving slide down
-//                                })
-//                                .back(10)
-//                                .splineTo(new Vector2d(-60, 12), Math.toRadians(180))
-//                                .addDisplacementMarker(() -> {
-//                                    //pick up cone on top of stack and start moving slide up
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, 16, Math.toRadians(45)))
-//                                .forward(5)
-//                                .back(10)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop cone
-//                                })
-//                                .lineToSplineHeading(new Pose2d(-35, 35, Math.toRadians(0)))
-//                                .lineTo(new Vector2d(-60,35))
-//                                .build()
-//                );
-//
-//        RoadRunnerBotEntity redbot1 = new DefaultBotBuilder(meepMeep)
-//                .setColorScheme(new ColorSchemeRedLight())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-//                .followTrajectorySequence(drive ->
-//                                drive.trajectorySequenceBuilder(new Pose2d(-36, -60, Math.toRadians(90)))
-//                                        .addDisplacementMarker(15, () -> {
-//                                            //start moving slides
-//                                        })
-//                                        .lineToLinearHeading(new Pose2d(-32, -8, Math.toRadians(45)))
-//                                .forward(5)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop thingy and start moving slide down
-//                                })
-//                                .back(10)
-//                                .splineTo(new Vector2d(-60, -12), Math.toRadians(180))
-//                                .addDisplacementMarker(() -> {
-//                                    //pick up cone on top of stack and start moving slide up
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, -16, Math.toRadians(-45)))
-//                                .forward(5)
-//                                .back(10)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop cone
-//                                })
-//                                .lineToSplineHeading(new Pose2d(-35, -35, Math.toRadians(0)))
-//                                        .build()
-//                );
-//        RoadRunnerBotEntity redbot2 = new DefaultBotBuilder(meepMeep)
-//                .setColorScheme(new ColorSchemeRedLight())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-//                .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(new Pose2d(-36, -60, Math.toRadians(90)))
-//                                .addDisplacementMarker(15, () -> {
-//                                    //start moving slides
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, -8, Math.toRadians(45)))
-//                                .forward(5)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop thingy and start moving slide down
-//                                })
-//                                .back(10)
-//                                .splineTo(new Vector2d(-60, -12), Math.toRadians(180))
-//                                .addDisplacementMarker(() -> {
-//                                    //pick up cone on top of stack and start moving slide up
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, -16, Math.toRadians(-45)))
-//                                .forward(5)
-//                                .back(10)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop cone
-//                                })
-//                                .lineToSplineHeading(new Pose2d(-35, -35, Math.toRadians(0)))
-//                                .lineTo(new Vector2d(-12,-35))
-//                                .build()
-//                );
-//        RoadRunnerBotEntity redbot3 = new DefaultBotBuilder(meepMeep)
-//                .setColorScheme(new ColorSchemeRedLight())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-//                .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(new Pose2d(-36, -60, Math.toRadians(90)))
-//                                .addDisplacementMarker(15, () -> {
-//                                    //start moving slides
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, -8, Math.toRadians(45)))
-//                                .forward(5)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop thingy and start moving slide down
-//                                })
-//                                .back(10)
-//                                .splineTo(new Vector2d(-60, -12), Math.toRadians(180))
-//                                .addDisplacementMarker(() -> {
-//                                    //pick up cone on top of stack and start moving slide up
-//                                })
-//                                .lineToLinearHeading(new Pose2d(-32, -16, Math.toRadians(-45)))
-//                                .forward(5)
-//                                .back(10)
-//                                .addDisplacementMarker(() -> {
-//                                    //drop cone
-//                                })
-//                                .lineToSplineHeading(new Pose2d(-35, -35, Math.toRadians(0)))
-//                                .lineTo(new Vector2d(-60,-35))
-//                                .build()
-//                );
-        RoadRunnerBotEntity altblue = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueDark())
+        RoadRunnerBotEntity blueStart = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, 60, Math.toRadians(-90)))
-                                .lineToLinearHeading(new Pose2d(-34, 32, Math.toRadians(-57)))
+                                //setup for cycle + initial drop
+                                .lineToLinearHeading(new Pose2d(-36,11,Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-23.5,11,Math.toRadians(-90)))
+
                                 .build()
                 );
 
+        RoadRunnerBotEntity blueCycle = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-55,12,Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(-58,12,Math.toRadians(180)))//small move forward to get cone
+                                .lineToLinearHeading(new Pose2d(-23.5,11,Math.toRadians(-90)))
+
+                                .build()
+                );
+        RoadRunnerBotEntity blueParkOne = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-12,12,Math.toRadians(180)))
+                                .build()
+                );
+        RoadRunnerBotEntity blueParkTwo = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-35,12,Math.toRadians(180)))
+                                .build()
+                );
+        RoadRunnerBotEntity blueParkThree = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(-23.5, 11, Math.toRadians(-90)))
+                                .lineToLinearHeading(new Pose2d(-58,12,Math.toRadians(180)))
+                                .build()
+                );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_KAI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
-                .addEntity(altblue)
+                .addEntity(blueStart)
 
                 .start();
     }

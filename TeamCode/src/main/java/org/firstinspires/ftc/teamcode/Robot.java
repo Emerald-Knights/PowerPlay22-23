@@ -36,7 +36,7 @@ public class Robot extends SampleMecanumDrive {
     DcMotor test;
     public Servo leftClaw;
     public Servo rightClaw;
-    public DcMotor slide1, slide2;
+    public DcMotor slide;
 
     public DistanceSensor distance;
     public BNO055IMU imu;
@@ -51,14 +51,8 @@ public class Robot extends SampleMecanumDrive {
     final static double TICKS_TO_INCH_FORWARD = 0.0265;
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
     //theoretical ticks to inch 32.7404454359 (360 / circumference of the wheel)
-    static DcMotor[] encoderMotors;
 
-    PIDController slidePID;
-    int currSlidePosition = 0;
-    public int targetSlidePosition = 0;
-    int[] slidePosition = new int[]{200, 0, 0, 0};
-    InterpLUT maxVelLut = new InterpLUT();
-    double maxVel = 1;
+    public int[] slidePosition = new int[]{0, 1, 2, 3};
 
     public OpenCvWebcam webcam;
 
@@ -69,26 +63,15 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-//        slide1 = hardwareMap.get(DcMotor.class, "slide1");
-//        slide2 = hardwareMap.get(DcMotor.class, "slide2");
-//
-//        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-//        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
-        //test = hardwareMap.get(DcMotor.class, "test");
-        distance = hardwareMap.get(DistanceSensor.class, "distance");
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
-        //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 //        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
 //        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
-        encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
         distance = hardwareMap.get(DistanceSensor.class, "distance");
 //        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide1.setDirection(DcMotorEx.Direction.REVERSE);
 //        slide2.setDirection(DcMotorEx.Direction.REVERSE);
+        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -98,7 +81,6 @@ public class Robot extends SampleMecanumDrive {
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
-        this.telemetry = telemetry;
     }
 
     public void initOpenCV() {
@@ -306,39 +288,21 @@ public class Robot extends SampleMecanumDrive {
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    
-    public void moveSlide(double vector, double time) {
-        timer.reset();
-        while(timer.seconds() < time) {
-            slide1.setPower(vector);
-            slide2.setPower(vector);
-        }
-        slide1.setPower(0.2);
-        slide2.setPower(0.2);
-    }
-    
-    public void setSlidePower(double power){
-        slide1.setPower(power);
-        slide2.setPower(power);
+
+    public void setSlidePosition(int height) {
+        slide.setTargetPosition(height);
     }
 
-    public boolean slideUpdate() {
-        float target = slidePosition[targetSlidePosition];
-        maxVel = 1;
-        if ((target - slide1.getCurrentPosition()) > maxVel){
-            double pow = slidePID.logUpdate(slide1.getCurrentPosition() + maxVel, slide1.getCurrentPosition(), this.linearOpMode.telemetry, "slide");
-            if(pow < 0.8) {
-                slide1.setPower(pow);
-                slide2.setPower(pow);
-            }
-            return false;
+    public void moveSlide(double power, double time) {
+        timer.reset();
+        while(timer.seconds() < time) {
+            slide.setPower(power);
         }
-        else {
-            currSlidePosition = targetSlidePosition;
-            slide1.setPower(0);
-            slide2.setPower(0);
-            return true;
-        }
+        slide.setPower(0);
+    }
+
+    public void setSlidePower(double power) {
+        slide.setPower(power);
     }
 
     public void turnToJunction() {

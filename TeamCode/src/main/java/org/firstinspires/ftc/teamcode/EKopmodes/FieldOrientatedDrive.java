@@ -65,7 +65,6 @@ public class FieldOrientatedDrive extends LinearOpMode {
                     wucru.moveClaw();
                     robotState = RobotState.DRIVE;
                     break;
-
             }
 
             //set late
