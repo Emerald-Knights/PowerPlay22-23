@@ -1,58 +1,136 @@
 package org.firstinspires.ftc.teamcode.EKopmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.vuforia.HINT;
-import com.vuforia.Vuforia;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaBase;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaCurrentGame;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.teamcode.R;
 
-@Autonomous(name="VuforiaOp", group="auto")
+//this is the working one
+
+@TeleOp(name = "WorkingVuforiaOp")
 public class VuforiaOp extends LinearOpMode {
 
+    private VuforiaCurrentGame vuforiaPOWERPLAY;
 
+    VuforiaBase.TrackingResults vuforiaResults;
+
+    /**
+     * This function is executed when this Op Mode is selected from the Driver Station.
+     */
     @Override
-    public void runOpMode() throws InterruptedException{
-        VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
-        params.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        params.vuforiaLicenseKey = "AZ/jPKD/////AAABmQZtslt8VE5CpeTMoCYH8aosYBRlEThiLP6RnULWCnz/8QoC+/dYzQAio0GN3IyWtleIdvEMp4QVowDaD9NQVed2jQgPei/4hc8OHfPGBBUQnM72Dr0i0XrIvTekdCF0Tny3bVRdSKp2E8kYo9uZp2afQWHhBeO7AYHqp328gFdZOFT/+2ZbLt+hNgrTqm2+z/UKuNkd9cZhJul0oegpzHN9GUa+FNN1hUl4C3ArGzqOq3azeakVLsRbrbCh79KH71a5IbYNLJgMk5tCRkqkVHwJMmQN/6nHnRdPCXWfbuM7xdMCcgzgETDPyeRFALjPQo0KEGeBUGMeZ2bAoQnzOoLmDPbAkru0MnJKo3l+wq4j";
-        params.cameraMonitorFeedback = VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES;
+    public void runOpMode() {
+        vuforiaPOWERPLAY = new VuforiaCurrentGame();
 
-        VuforiaLocalizer vuforia = ClassFactory.getInstance().createVuforia(params);
-        Vuforia.setHint(HINT.HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 4);
-
-        VuforiaTrackables Images = vuforia.loadTrackablesFromAsset("2023_PowerPlay_navImages");
-        Images.get(0).setName("wires");
-        Images.get(1).setName("circuitBoard");
-        Images.get(2).setName("towers");
-        Images.get(3).setName("engine");
-
+        // Initialize Vuforia
+        telemetry.addData("Status", "Initializing Vuforia. Please wait...");
+        telemetry.update();
+        initVuforia();
+        // Activate here for camera preview.
+        vuforiaPOWERPLAY.activate();
+        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
+        telemetry.addData(">>", "Vuforia initialized, press start to continue...");
+        telemetry.update();
         waitForStart();
-
-        Images.activate();
-
-        for(VuforiaTrackable nav : Images){
-            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) nav.getListener()).getPose();
-
-            if (pose != null){
-                VectorF translation = pose.getTranslation();
-
-                telemetry.addData(nav.getName() + " Translation: ", translation);
-
-                double amountToTurn = Math.atan2(translation.get(1), translation.get(2));
-
-                telemetry.addData(nav.getName() + " Degrees to turn: ", Math.toDegrees(amountToTurn));
+        if (opModeIsActive()) {
+            // Put run blocks here.
+            while (opModeIsActive()) {
+                // Are the targets visible?
+                // (Note we only process first visible target).
+                if (isTargetVisible("Red Audience Wall")) {
+                    processTarget();
+                } else if (isTargetVisible("Red Rear Wall")) {
+                    processTarget();
+                } else if (isTargetVisible("Blue Audience Wall")) {
+                    processTarget();
+                } else if (isTargetVisible("Blue Rear Wall")) {
+                    processTarget();
+                } else {
+                    telemetry.addData("No Targets Detected", "Targets are not visible.");
+                }
+                telemetry.update();
             }
         }
-        telemetry.update();
+        // Don't forget to deactivate Vuforia.
+        vuforiaPOWERPLAY.deactivate();
 
+        vuforiaPOWERPLAY.close();
     }
 
+    /**
+     * Describe this function...
+     */
+    private void initVuforia() {
+        // Initialize using external web camera.
+        vuforiaPOWERPLAY.initialize(
+                "", // vuforiaLicenseKey
+                hardwareMap.get(WebcamName.class, "Webcam 1"), // cameraName
+                "", // webcamCalibrationFilename
+                false, // useExtendedTracking
+                true, // enableCameraMonitoring
+                VuforiaLocalizer.Parameters.CameraMonitorFeedback.AXES, // cameraMonitorFeedback
+                0, // dx
+                0, // dy
+                0, // dz
+                AxesOrder.XZY, // axesOrder
+                90, // firstAngle
+                90, // secondAngle
+                0, // thirdAngle
+                true); // useCompetitionFieldTargetLocations
+    }
+
+    /**
+     * Check to see if the target is visible.
+     */
+    private boolean isTargetVisible(String trackableName) {
+        boolean isVisible;
+
+        // Get vuforia results for target.
+        vuforiaResults = vuforiaPOWERPLAY.track(trackableName);
+        // Is this target visible?
+        if (vuforiaResults.isVisible) {
+            isVisible = true;
+        } else {
+            isVisible = false;
+        }
+        return isVisible;
+    }
+
+    /**
+     * This function displays location on the field and rotation about the Z
+     * axis on the field. It uses results from the isTargetVisible function.
+     */
+    private void processTarget() {
+        // Display the target name.
+        telemetry.addData("Target Detected", vuforiaResults.name + " is visible.");
+        telemetry.addData("X (in)", Double.parseDouble(JavaUtil.formatNumber(displayValue(vuforiaResults.x, "IN"), 2))+71);
+        telemetry.addData("Y (in)", Double.parseDouble(JavaUtil.formatNumber(displayValue(vuforiaResults.y, "IN"), 2))-36);
+        telemetry.addData("Z (in)", Double.parseDouble(JavaUtil.formatNumber(displayValue(vuforiaResults.z, "IN"), 2)));
+        telemetry.addData("Rotation about Z (deg)", Double.parseDouble(JavaUtil.formatNumber(vuforiaResults.zAngle, 2)));
+    }
+
+    /**
+     * By default, distances are returned in millimeters by Vuforia.
+     * Convert to other distance units (CM, M, IN, and FT).
+     */
+    private double displayValue(float originalValue, String units) {
+        double convertedValue;
+
+        // Vuforia returns distances in mm.
+        if (units.equals("CM")) {
+            convertedValue = originalValue / 10;
+        } else if (units.equals("M")) {
+            convertedValue = originalValue / 1000;
+        } else if (units.equals("IN")) {
+            convertedValue = originalValue / 25.4;
+        } else if (units.equals("FT")) {
+            convertedValue = (originalValue / 25.4) / 12;
+        } else {
+            convertedValue = originalValue;
+        }
+        return convertedValue;
+    }
 }
