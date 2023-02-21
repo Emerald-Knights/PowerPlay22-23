@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.camera;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -13,7 +17,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocalizationPipeline extends OpenCvPipeline {
+
+    LinearOpMode linearOpMode;
+
+    public double pixelsOffCenter;
+    public double angle;
+    static public final double RAD_PER_PIXEL = 0.00253807106; //inverse of slope of graph
+
+    int scanHeight = 10;
+    int yDev = 100;
+
+    public LocalizationPipeline(LinearOpMode linearOpMode) {
+        this.linearOpMode = linearOpMode;
+    }
+
+    public LocalizationPipeline() {
+        //heyyyy
+    }
+
     public Mat processFrame(Mat input) {
+        Size imageSize = input.size();
+
         Mat mat = input.clone();
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
         Mat overlay = new Mat();
@@ -26,28 +50,35 @@ public class LocalizationPipeline extends OpenCvPipeline {
         Mat edges = new Mat();
         Imgproc.Canny(cropped, edges, 150, 200);
 
-        List<MatOfPoint> contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
-        Imgproc.findContours(edges, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        Rect crosshair2 = new Rect(new Point(0, yDev), new Point(imageSize.width, yDev+scanHeight));
+        Imgproc.rectangle(cropped, crosshair2, new Scalar(4,233,78),3,8);
 
-        MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
-        Rect[] boundRect = new Rect[contours.size()];
-        for (int i = 0; i < contours.size(); i++) {
-            contoursPoly[i] = new MatOfPoint2f();
-            Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
-            boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
+        //i = x
+        //j = y
+        int sumX = 0;
+        int cnt=1;
+        for(int i = 0; i < imageSize.width; i++) {
+            for (int j = yDev; j < scanHeight+yDev; j++) {
+                double[] pixelColor = cropped.get(j,i);
+                if(pixelColor != null && pixelColor[0] > 50) { //just to make sure it exists and it's not black
+                    sumX += i;
+                    cnt++;
+                }
+            }
         }
+        int averageX = sumX/cnt;
+        Imgproc.line(cropped, new Point(averageX, 0), new Point(averageX, imageSize.height), new Scalar(100, 100, 100), 5);
 
-        for(int i = 0; i < boundRect.length; i++) {
-            Imgproc.rectangle(input, boundRect[i], new Scalar(62, 255, 127));
-        }
+        pixelsOffCenter = averageX-(imageSize.width/2);
+        angle = pixelsOffCenter * RAD_PER_PIXEL;
 
         //clean up memory
-        //edges.copyTo(input);
+        cropped.copyTo(input);
         cropped.release();
         mat.release();
         overlay.release();
         masked.release();
+        edges.release();
 
         return input;
     }

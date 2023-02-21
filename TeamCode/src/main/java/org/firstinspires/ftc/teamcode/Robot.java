@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,8 +15,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.camera.DetectorPipeline;
+import org.firstinspires.ftc.teamcode.camera.LocalizationPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -81,6 +84,7 @@ public class Robot extends SampleMecanumDrive {
 //        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
         encoderMotors = new DcMotorEx[]{leftFront, leftBack, rightFront, rightBack};
 
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
 //        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide1.setDirection(DcMotorEx.Direction.REVERSE);
@@ -94,17 +98,6 @@ public class Robot extends SampleMecanumDrive {
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
-        this.telemetry = telemetry;
-
-        //constants to tune
-        slidePID = new PIDController(1, 0, 0);
-        maxVelLut.add(-0.1, 1);
-        maxVelLut.add(1000000, 1);
-    }
-
-    public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode, Telemetry telemetry) {
-        super(hardwareMap);
-//        Robot(hardwareMap, linearOpMode);
         this.telemetry = telemetry;
     }
 
@@ -132,6 +125,13 @@ public class Robot extends SampleMecanumDrive {
 
 
         });
+    }
+
+    public void cameraLocalize() {
+        double dist = distance.getDistance(DistanceUnit.INCH);
+        double x = dist;
+        double y = dist * LocalizationPipeline.RAD_PER_PIXEL;
+        setPoseEstimate(new Pose2d(x, y, imu.getAngularOrientation().firstAngle));
     }
 
     //teleop methods
