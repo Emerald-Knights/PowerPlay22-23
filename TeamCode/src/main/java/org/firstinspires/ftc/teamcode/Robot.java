@@ -75,7 +75,7 @@ public class Robot extends SampleMecanumDrive {
 //        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
 //        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         //test = hardwareMap.get(DcMotor.class, "test");
-
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftBack.setDirection(DcMotorEx.Direction.REVERSE);
         //leftFront.setDirection(DcMotorEx.Direction.REVERSE);
@@ -306,6 +306,7 @@ public class Robot extends SampleMecanumDrive {
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+    
     public void moveSlide(double vector, double time) {
         timer.reset();
         while(timer.seconds() < time) {
@@ -315,10 +316,10 @@ public class Robot extends SampleMecanumDrive {
         slide1.setPower(0.2);
         slide2.setPower(0.2);
     }
-
-    public void setSlidePower(double vector) {
-        slide1.setPower(vector);
-        slide2.setPower(vector);
+    
+    public void setSlidePower(double power){
+        slide1.setPower(power);
+        slide2.setPower(power);
     }
 
     public boolean slideUpdate() {
