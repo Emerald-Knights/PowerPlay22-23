@@ -15,17 +15,14 @@ public class TestMotors extends LinearOpMode{
         public void runOpMode() throws InterruptedException {
             Robot wucru = new Robot(hardwareMap, this);
             waitForStart();
-            boolean lateA = false;
-            boolean lateB = false;
-            boolean moveSlides = false;
             while (opModeIsActive()) {
-                if(gamepad1.a) {
-                    moveSlides = true;
-                } else if(gamepad1.b) {
-                    moveSlides = false;
-                }
-                telemetry.addData("slide status", moveSlides);
-                lateA = gamepad1.a;
+//                if(gamepad1.a) {
+//                    moveSlides = true;
+//                } else if(gamepad1.b) {
+//                    moveSlides = false;
+//                }
+//                telemetry.addData("slide status", moveSlides);
+//                lateA = gamepad1.a;
                 telemetry.update();
             }
         }
