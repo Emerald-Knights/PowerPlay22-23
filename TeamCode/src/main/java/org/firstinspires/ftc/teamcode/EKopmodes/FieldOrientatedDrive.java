@@ -70,8 +70,16 @@ public class FieldOrientatedDrive extends LinearOpMode {
             //set late
             clawLate = gamepad2.b;
             xLate = gamepad2.x;
-            telemetry.addData("servo", wucru.leftClaw.getPosition());
-            telemetry.addData("rservo", wucru.rightClaw.getPosition());
+            telemetry.addData("y val:", gamepad1.left_stick_y);
+            telemetry.addData("lb ",wucru.leftBack.getCurrentPosition());
+            telemetry.addData("lf ",wucru.leftFront.getCurrentPosition());
+            telemetry.addData("rf ",wucru.rightFront.getCurrentPosition());
+            telemetry.addData("rb ",wucru.rightBack.getCurrentPosition());
+            telemetry.addData("angle", wucru.imu.getAngularOrientation().firstAngle);
+
+            telemetry.update();
+            //telemetry.addData("servo", wucru.leftClaw.getPosition());
+            //telemetry.addData("rservo", wucru.rightClaw.getPosition());
             telemetry.update();
         }
     }

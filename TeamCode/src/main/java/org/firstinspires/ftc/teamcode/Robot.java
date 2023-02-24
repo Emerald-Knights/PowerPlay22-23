@@ -65,7 +65,6 @@ public class Robot extends SampleMecanumDrive {
 
 //        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
 //        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
-
         distance = hardwareMap.get(DistanceSensor.class, "distance");
 //        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -82,6 +81,7 @@ public class Robot extends SampleMecanumDrive {
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
     }
+
 
     public void initOpenCV() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
@@ -292,14 +292,8 @@ public class Robot extends SampleMecanumDrive {
     public void setSlidePosition(int height) {
         slide.setTargetPosition(height);
     }
+    
 
-    public void moveSlide(double power, double time) {
-        timer.reset();
-        while(timer.seconds() < time) {
-            slide.setPower(power);
-        }
-        slide.setPower(0);
-    }
 
     public void setSlidePower(double power) {
         slide.setPower(power);
