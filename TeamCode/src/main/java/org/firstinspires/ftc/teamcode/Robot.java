@@ -30,12 +30,14 @@ public class Robot extends SampleMecanumDrive {
 
     public boolean RUN_USING_ENCODER;
     private boolean clawClosed = false;
+    private boolean neckFront = false;
     private boolean rnpUp = false;
 
     public DcMotorEx leftBack, leftFront, rightBack, rightFront;
     DcMotor test;
     public Servo leftClaw;
     public Servo rightClaw;
+    public Servo neck;
     public DcMotor slide;
 
     public DistanceSensor distance;
@@ -63,13 +65,11 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-//        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
-//        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        neck = hardwareMap.get(Servo.class, "neck");
+
         distance = hardwareMap.get(DistanceSensor.class, "distance");
-//        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        slide1.setDirection(DcMotorEx.Direction.REVERSE);
-//        slide2.setDirection(DcMotorEx.Direction.REVERSE);
         slide = hardwareMap.get(DcMotor.class, "slide");
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -120,13 +120,25 @@ public class Robot extends SampleMecanumDrive {
     //teleop methods
     public void moveClaw() {
         if(clawClosed) {
-            rightClaw.setPosition(0.365);
-            leftClaw.setPosition(0.07);
+            //open position
+            rightClaw.setPosition(0.64);
+            leftClaw.setPosition(0.68);
         } else {
-            rightClaw.setPosition(0.26);
-            leftClaw.setPosition(0.17);
+            //closed position
+            rightClaw.setPosition(0.50);
+            leftClaw.setPosition(0.85);
         }
         clawClosed = !clawClosed;
+    }
+
+    public void moveNeck() {
+        if(neckFront) {
+            //back positoin
+            neck.setPosition(0.822);
+        } else {
+            neck.setPosition(0.15);
+        }
+        neckFront = !neckFront;
     }
 
     public void overextendClaw() {
@@ -293,8 +305,6 @@ public class Robot extends SampleMecanumDrive {
     public void setSlidePosition(int height) {
         slide.setTargetPosition(height);
     }
-    
-
 
     public void setSlidePower(double power) {
         slide.setPower(power);
