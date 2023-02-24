@@ -15,7 +15,6 @@ public class Vuforia extends LinearOpMode{
     VuforiaLocalizer.Parameters parameters;
     VuforiaTrackables visionTargets;
     VuforiaTrackable target;
-    VuforiaTr
 
     public void runOpMode() throws InterruptedException{
         waitForStart();
