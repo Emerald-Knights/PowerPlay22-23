@@ -30,6 +30,7 @@ public class Robot extends SampleMecanumDrive {
 
     public boolean RUN_USING_ENCODER;
     private boolean clawClosed = false;
+    private boolean neckFront = false;
     private boolean rnpUp = false;
 
     public DcMotorEx leftBack, leftFront, rightBack, rightFront;
@@ -128,6 +129,16 @@ public class Robot extends SampleMecanumDrive {
             leftClaw.setPosition(0.85);
         }
         clawClosed = !clawClosed;
+    }
+
+    public void moveNeck() {
+        if(neckFront) {
+            //back positoin
+            neck.setPosition(0.822);
+        } else {
+            neck.setPosition(0.15);
+        }
+        neckFront = !neckFront;
     }
 
     public void overextendClaw() {
