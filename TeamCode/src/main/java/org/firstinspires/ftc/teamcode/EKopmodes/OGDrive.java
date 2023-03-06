@@ -20,6 +20,11 @@ public class OGDrive extends LinearOpMode {
         double lx, rx, ly; // intialize variables for the gamepad
         boolean lateA = false;
         boolean lateB = false;
+        boolean lateDdown = false;
+        boolean lateDleft = false;
+        boolean lateDright = false;
+        boolean lateDup = false;
+        bot.switchSlideMode();
         while (opModeIsActive()) {
             //drive
             // set the gamepad variables
@@ -61,7 +66,7 @@ public class OGDrive extends LinearOpMode {
 
 
             telemetry.addData("slideEncoder: ", bot.slide.getCurrentPosition());
-            //bottom: -206: top around -5444 low-5198: mid
+            //bottom: 0: top around 4181  mid:2985 bottom:1679
             telemetry.addData("y val:", gamepad1.left_stick_y);
             telemetry.addData("lb:",lb);
             telemetry.addData("lf",lf);
@@ -80,8 +85,32 @@ public class OGDrive extends LinearOpMode {
             if (gamepad2.b && !lateB) {
                 bot.moveNeck();
             }
+            if (gamepad2.dpad_down && !lateDdown){
+                //bot.slidePosLowest();
+                bot.slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //bot.slide.setTargetPosition(1679);
+                bot.goToJunction(0);
+                bot.slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            }
+            if (gamepad2.dpad_left && !lateDleft){
+  //              bot.slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                bot.slide.setTargetPosition(1679);
+//                bot.goToJunction(1);
+    //            bot.slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            if (gamepad2.dpad_right && !lateDright){
+                bot.goToJunction(2);
+            }
+            if (gamepad2.dpad_up && !lateDup){
+                bot.goToJunction(3);
+            }
             lateB = gamepad2.b;
             lateA = gamepad2.a;
+            lateDdown = gamepad2.dpad_down;
+            lateDleft = gamepad2.dpad_left;
+            lateDright = gamepad2.dpad_right;
+            lateDup = gamepad2.dpad_up;
 
 
         }

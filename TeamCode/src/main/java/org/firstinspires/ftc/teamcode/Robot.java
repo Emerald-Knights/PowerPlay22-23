@@ -58,6 +58,7 @@ public class Robot extends SampleMecanumDrive {
     //theoretical ticks to inch 32.7404454359 (360 / circumference of the wheel)
 
     public int[] slidePosition = new int[]{0, 1, 2, 3};
+    public int[] levels = new int[] {0,1720,2985,4181};
     InterpLUT slideZeroPower = new InterpLUT();
 
     public OpenCvWebcam webcam;
@@ -86,7 +87,7 @@ public class Robot extends SampleMecanumDrive {
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide.setDirection(DcMotorSimple.Direction.REVERSE);
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -333,6 +334,16 @@ public class Robot extends SampleMecanumDrive {
     }
 
     public void moveSlide(double power, double time) {
+
+    }
+    public void switchSlideMode(){
+        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    //bottom: 0: top around 4181  mid:2985 bottom:1679
+    public void goToJunction(int level){
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slide.setTargetPosition(levels[level]);
+        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
