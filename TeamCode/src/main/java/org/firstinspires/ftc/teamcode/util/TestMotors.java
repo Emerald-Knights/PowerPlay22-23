@@ -18,18 +18,8 @@ public class TestMotors extends LinearOpMode{
             slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             waitForStart();
             while (opModeIsActive()) {
-<<<<<<< HEAD
                 slide.setPower((gamepad1.right_trigger - gamepad1.left_trigger) * 0.8);
                 telemetry.addData("slide status", slide.getPower());
-=======
-//                if(gamepad1.a) {
-//                    moveSlides = true;
-//                } else if(gamepad1.b) {
-//                    moveSlides = false;
-//                }
-//                telemetry.addData("slide status", moveSlides);
-//                lateA = gamepad1.a;
->>>>>>> test-claw
                 telemetry.update();
             }
         }

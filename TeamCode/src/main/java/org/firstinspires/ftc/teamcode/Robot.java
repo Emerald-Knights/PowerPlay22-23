@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.camera.DetectorPipeline;
 import org.firstinspires.ftc.teamcode.camera.LocalizationPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rrutil.Encoder;
 import org.firstinspires.ftc.teamcode.util.PIDController;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -49,17 +50,28 @@ public class Robot extends SampleMecanumDrive {
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
+    public Encoder leftOdo, centerOdo, rightOdo;
+
     public final int DIRECTION = 1;
     final static double TICKS_TO_INCH_FORWARD = 0.0265;
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
     //theoretical ticks to inch 32.7404454359 (360 / circumference of the wheel)
 
     public int[] slidePosition = new int[]{0, 1, 2, 3};
+    InterpLUT slideZeroPower = new InterpLUT();
 
     public OpenCvWebcam webcam;
 
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
         super(hardwareMap);
+        leftOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "leftOdo"));
+        centerOdo = new Encoder(hardwareMap.get(DcMotorEx.class,"centerOdo"));
+        rightOdo = new Encoder(hardwareMap.get(DcMotorEx.class,"rightOdo"));
+        leftOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        centerOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -72,6 +84,9 @@ public class Robot extends SampleMecanumDrive {
         distance = hardwareMap.get(DistanceSensor.class, "distance");
         slide = hardwareMap.get(DcMotor.class, "slide");
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -81,6 +96,10 @@ public class Robot extends SampleMecanumDrive {
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
         timer = new ElapsedTime();
+
+        //add slide data points: slideZeroPower.add();
+
+        //slideZeroPower.createLUT();
     }
 
 
@@ -134,7 +153,7 @@ public class Robot extends SampleMecanumDrive {
     public void moveNeck() {
         if(neckFront) {
             //back positoin
-            neck.setPosition(0.822);
+            neck.setPosition(1);
         } else {
             neck.setPosition(0.15);
         }
@@ -307,7 +326,14 @@ public class Robot extends SampleMecanumDrive {
     }
 
     public void setSlidePower(double power) {
-        slide.setPower(power);
+        if(power == 0) {
+            slide.setPower(slide.getCurrentPosition()/1000000.0);
+        }
+        else slide.setPower(power);
+    }
+
+    public void moveSlide(double power, double time) {
+
     }
 
     public void turnToJunction() {

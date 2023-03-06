@@ -25,7 +25,7 @@ public class OGDrive extends LinearOpMode {
             // set the gamepad variables
             lx = gamepad1.left_stick_x;
             rx = gamepad1.right_stick_x;
-            ly = -gamepad1.left_stick_y;
+            ly = gamepad1.left_stick_y;
             // arithmetic to get motor values - not scaled
             double lf = ly - rx - lx;
             double lb = ly - rx + lx;
@@ -41,11 +41,11 @@ public class OGDrive extends LinearOpMode {
                 ratio = magnitude / max;
             }
             // sets the motor power
-            if (magnitude > 0.18) {
-                bot.leftFront.setPower(lf * ratio*0.8);
-                bot.leftBack.setPower(lb * ratio*0.8);
-                bot.rightFront.setPower(rf * ratio*0.8);
-                bot.rightBack.setPower(rb * ratio*0.8);
+            if (magnitude > 0.05) {
+                bot.leftFront.setPower(lf * ratio*0.6);
+                bot.leftBack.setPower(lb * ratio*0.6);
+                bot.rightFront.setPower(rf * ratio*0.6);
+                bot.rightBack.setPower(rb * ratio*0.6);
             }
             else{
                 bot.leftFront.setPower(0);
@@ -54,11 +54,23 @@ public class OGDrive extends LinearOpMode {
                 bot.rightBack.setPower(0);
             }
             //telemetry.addData("lb encoder:", bot.leftBack.getCurrentPosition());
+            telemetry.addData("RF: ", bot.rightFront.getPower());
+            telemetry.addData("RB: ", bot.rightBack.getPower());
+            telemetry.addData("LF: ", bot.leftFront.getPower());
+            telemetry.addData("LB: ", bot.leftBack.getPower());
+
+
+            telemetry.addData("slideEncoder: ", bot.slide.getCurrentPosition());
+            //bottom: -206: top around -5444 low-5198: mid
             telemetry.addData("y val:", gamepad1.left_stick_y);
             telemetry.addData("lb:",lb);
             telemetry.addData("lf",lf);
             telemetry.addData("rf",rf);
             telemetry.addData("rb",rb);
+            telemetry.addData("left:", bot.leftOdo.getCurrentPosition());
+            telemetry.addData("right:", bot.rightOdo.getCurrentPosition());
+            telemetry.addData("center:", bot.centerOdo.getCurrentPosition());
+            telemetry.addData("slidePower", bot.slide.getPower());
 
             telemetry.update();
             bot.setSlidePower((gamepad2.right_trigger - gamepad2.left_trigger) * 0.8);

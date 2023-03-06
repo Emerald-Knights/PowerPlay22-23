@@ -32,15 +32,18 @@ public class AutonParkTimeBased extends LinearOpMode {
             telemetry.update();
             wucru.turnTo(0, 0.08);
             sleep(1000);
-            wucru.straightWtime(1,0.1,1);
+            wucru.straightWtime(-1,0.1,1);
         }
         else if(sleeveColor == 2){
             telemetry.addLine("in 2 loop");
-            wucru.straightWtime(1, 0.1, 1.3);
+            wucru.turnTo(Math.PI/2,0.08,1);
+            wucru.strafeWtime(-1,0.15,1.9);
+            //wucru.straightWtime(-1, 0.1, 0.8);
+            //wucru.straightWtime(-1,0.1,0.8);
         }
         else if (sleeveColor == 3){
             telemetry.addLine("in 3 loop");
-            wucru.strafeWtime(1,0.2,0.8);
+            wucru.strafeWtime(-1,0.2,0.8);
             sleep(1000);
             telemetry.addData("heading: ", wucru.imu.getAngularOrientation().firstAngle);
             telemetry.update();
