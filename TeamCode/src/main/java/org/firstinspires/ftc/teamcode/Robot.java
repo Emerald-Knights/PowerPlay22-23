@@ -57,8 +57,8 @@ public class Robot extends SampleMecanumDrive {
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
     //theoretical ticks to inch 32.7404454359 (360 / circumference of the wheel)
 
-    public int[] slidePosition = new int[]{0, 1, 2, 3};
-    public int[] levels = new int[] {0,1720,2985,4181};
+    public int[] slidePosition = new int[3];
+    public int[] levels = new int[] {0,1800,3019,4240};
     InterpLUT slideZeroPower = new InterpLUT();
 
     public OpenCvWebcam webcam;
@@ -72,7 +72,8 @@ public class Robot extends SampleMecanumDrive {
         centerOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
+        leftOdo.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightOdo.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -87,6 +88,7 @@ public class Robot extends SampleMecanumDrive {
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide.setDirection(DcMotorSimple.Direction.REVERSE);
         slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide.setTargetPosition(0);
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");

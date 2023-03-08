@@ -24,7 +24,8 @@ public class OGDrive extends LinearOpMode {
         boolean lateDleft = false;
         boolean lateDright = false;
         boolean lateDup = false;
-        bot.switchSlideMode();
+        boolean lateX = false;
+        bot.slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (opModeIsActive()) {
             //drive
             // set the gamepad variables
@@ -85,28 +86,9 @@ public class OGDrive extends LinearOpMode {
             if (gamepad2.b && !lateB) {
                 bot.moveNeck();
             }
-            if (gamepad2.dpad_down && !lateDdown){
-                //bot.slidePosLowest();
-                bot.slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //bot.slide.setTargetPosition(1679);
-                bot.goToJunction(0);
-                bot.slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            }
-            if (gamepad2.dpad_left && !lateDleft){
-  //              bot.slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                bot.slide.setTargetPosition(1679);
-//                bot.goToJunction(1);
-    //            bot.slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            if (gamepad2.dpad_right && !lateDright){
-                bot.goToJunction(2);
-            }
-            if (gamepad2.dpad_up && !lateDup){
-                bot.goToJunction(3);
-            }
             lateB = gamepad2.b;
             lateA = gamepad2.a;
+            lateX = gamepad2.x;
             lateDdown = gamepad2.dpad_down;
             lateDleft = gamepad2.dpad_left;
             lateDright = gamepad2.dpad_right;
