@@ -163,6 +163,7 @@ public class Robot extends SampleMecanumDrive {
         neckFront = !neckFront;
     }
 
+
     public void overextendClaw() {
         rightClaw.setPosition(0.7);
         leftClaw.setPosition(0);
