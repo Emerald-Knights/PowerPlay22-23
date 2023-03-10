@@ -104,7 +104,7 @@ public class MeepMeepTesting {
                 );
 
         RoadRunnerBotEntity redbot1 = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueLight())
+                .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(36, 60, Math.toRadians(-90)))
@@ -132,7 +132,7 @@ public class MeepMeepTesting {
                 );
 
         RoadRunnerBotEntity redbot2 = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueLight())
+                .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(36, 60, Math.toRadians(-90)))
@@ -161,7 +161,7 @@ public class MeepMeepTesting {
                 );
 
         RoadRunnerBotEntity redbot3 = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueLight())
+                .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(36, 60, Math.toRadians(-90)))
@@ -194,11 +194,11 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
-//                .addEntity(bluebot1)
-//                .addEntity(bluebot2)
+                .addEntity(bluebot1)
+                .addEntity(bluebot2)
                 .addEntity(bluebot3)
-//                .addEntity(redbot1)
-//                .addEntity(redbot2)
+                .addEntity(redbot1)
+                .addEntity(redbot2)
                 .addEntity(redbot3)
                 .start();
     }
