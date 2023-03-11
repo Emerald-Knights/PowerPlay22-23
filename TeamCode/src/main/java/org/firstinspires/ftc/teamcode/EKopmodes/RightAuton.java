@@ -27,12 +27,12 @@ public class RightAuton extends LinearOpMode {
 //        wucru.setPoseEstimate(new Pose2d(-36, 60, Math.toRadians(-90)));
 
         Trajectory traj_start1 = wucru.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(52,0 ,Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(50.5,-5 ,Math.toRadians(45)))
                 .build();
 
 
         Trajectory traj_start2= wucru.trajectoryBuilder(traj_start1.end())
-                .forward(14)
+                .forward(16)
                 .build();
 
         Trajectory traj_start3 = wucru.trajectoryBuilder(traj_start2.end()).back(14).build();
@@ -40,15 +40,15 @@ public class RightAuton extends LinearOpMode {
         Trajectory turn_to_cone = wucru.trajectoryBuilder(traj_start3.end())
                 .lineToLinearHeading(new Pose2d(48,-10, Math.toRadians(90))).build();
 
-        Trajectory coneForward = wucru.trajectoryBuilder(turn_to_cone.end()).back(15).build();
+        Trajectory coneForward = wucru.trajectoryBuilder(turn_to_cone.end()).back(10).build();
 
-        Trajectory coneBackward = wucru.trajectoryBuilder(coneForward.end()).forward(20).build();
+        Trajectory coneBackward = wucru.trajectoryBuilder(coneForward.end()).forward(10).build();
 
         Trajectory back_to_junction = wucru.trajectoryBuilder(coneBackward.end())
-                .lineToLinearHeading(new Pose2d(50,10, Math.toRadians(45))).build();
+                .lineToLinearHeading(new Pose2d(50,0, Math.toRadians(45))).build();
 
         Trajectory junctionForw = wucru.trajectoryBuilder(back_to_junction.end())
-                .forward(15).build();
+                .forward(16).build();
 
 //        Trajectory traj_park;
 //        if(DetectorPipeline.sleeveColor == 1) {
