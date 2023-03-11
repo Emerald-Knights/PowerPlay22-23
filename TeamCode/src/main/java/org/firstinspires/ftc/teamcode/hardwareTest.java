@@ -13,7 +13,8 @@ public class hardwareTest extends LinearOpMode {
         Robot bot = new Robot(hardwareMap, this);
         waitForStart();
         while (opModeIsActive()){
-
+            bot.moveSlide(30, 0.4);
+            bot.turnTo(Math.PI/2, 0.3,1);
         }
     }
 }

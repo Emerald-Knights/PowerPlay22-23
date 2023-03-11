@@ -59,24 +59,26 @@ public class OGDrive extends LinearOpMode {
                 bot.rightFront.setPower(0);
                 bot.rightBack.setPower(0);
             }
-            //telemetry.addData("lb encoder:", bot.leftBack.getCurrentPosition());
-            telemetry.addData("RF: ", bot.rightFront.getPower());
-            telemetry.addData("RB: ", bot.rightBack.getPower());
-            telemetry.addData("LF: ", bot.leftFront.getPower());
-            telemetry.addData("LB: ", bot.leftBack.getPower());
-
-
-            telemetry.addData("slideEncoder: ", bot.slide.getCurrentPosition());
-            //bottom: 0: top around 4181  mid:2985 bottom:1679
-            telemetry.addData("y val:", gamepad1.left_stick_y);
-            telemetry.addData("lb:",lb);
-            telemetry.addData("lf",lf);
-            telemetry.addData("rf",rf);
-            telemetry.addData("rb",rb);
-            telemetry.addData("left:", bot.leftOdo.getCurrentPosition());
-            telemetry.addData("right:", bot.rightOdo.getCurrentPosition());
-            telemetry.addData("center:", bot.centerOdo.getCurrentPosition());
-            telemetry.addData("slidePower", bot.slide.getPower());
+//            //telemetry.addData("lb encoder:", bot.leftBack.getCurrentPosition());
+//            telemetry.addData("RF: ", bot.rightFront.getPower());
+//            telemetry.addData("RB: ", bot.rightBack.getPower());
+//            telemetry.addData("LF: ", bot.leftFront.getPower());
+//            telemetry.addData("LB: ", bot.leftBack.getPower());
+//
+//
+//            telemetry.addData("slideEncoder: ", bot.slide.getCurrentPosition());
+//            //bottom: 0: top around 4181  mid:2985 bottom:1679
+//            telemetry.addData("y val:", gamepad1.left_stick_y);
+//            telemetry.addData("lb:",lb);
+//            telemetry.addData("lf",lf);
+//            telemetry.addData("rf",rf);
+//            telemetry.addData("rb",rb);
+//            telemetry.addData("left:", bot.leftOdo.getCurrentPosition());
+//            telemetry.addData("right:", bot.rightOdo.getCurrentPosition());
+//            telemetry.addData("center:", bot.centerOdo.getCurrentPosition());
+//            telemetry.addData("slidePower", bot.slide.getPower());
+            telemetry.addData("heading", bot.imu.getAngularOrientation().firstAngle);
+//            telemetry.addData("anglewrapped", bot.)
 
             telemetry.update();
             bot.setSlidePower((gamepad2.right_trigger - gamepad2.left_trigger) * 0.8);

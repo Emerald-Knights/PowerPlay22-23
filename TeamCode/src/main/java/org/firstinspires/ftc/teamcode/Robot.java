@@ -55,8 +55,9 @@ public class Robot extends SampleMecanumDrive {
     public final int DIRECTION = 1;
     final static double TICKS_TO_INCH_FORWARD = 0.0265;
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
+    final static double ticksToInchSlide = 116.67;
 
-    final static double OdoTicksToInchStraight = 467.5;
+    final static double OdoTicksToInchStraight = -467.5;
     final static double OdoTicksToInchStrafe = 467.2;
 
 
@@ -341,8 +342,12 @@ public class Robot extends SampleMecanumDrive {
         } else slide.setPower(power);
     }
 
-    public void moveSlide(double power, double time) {
-
+    public void moveSlide(double distance, double power) {
+        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while(Math.abs(slide.getCurrentPosition()) < Math.abs(distance * ticksToInchSlide)) {
+            slide.setPower(power);
+        }
+        slide.setPower(0);
     }
 
     public void switchSlideMode() {
@@ -377,19 +382,20 @@ public class Robot extends SampleMecanumDrive {
 
     //new auton methods
 
-    public void straightOneOdo(int direction, double speed, double inchesDistance, boolean resetEncoder) {
+    public void straightOneOdo(int direction, double speed, double inchesDistance, double targetAngle, double kp, boolean resetEncoder) {
         //forward is negative, back is positive
         //if resetEncoder == true, reset encoder before moving
         if (resetEncoder) {
-            leftOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            centerOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightOdo.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-        while (rightOdo.getCurrentPosition() < (inchesDistance * OdoTicksToInchStraight)){
-            leftBack.setPower(speed * direction);
-            leftFront.setPower(speed * direction);
-            rightBack.setPower(speed * direction);
-            rightFront.setPower(speed * direction);
+
+        while (Math.abs(rightOdo.getCurrentPosition()) < Math.abs((inchesDistance * OdoTicksToInchStraight))){
+            double error = targetAngle - imu.getAngularOrientation().firstAngle;
+            leftBack.setPower((speed * direction) - (kp * error));
+            leftFront.setPower((speed * direction) - (kp * error));
+            rightBack.setPower((speed * direction) + (kp * error));
+            rightFront.setPower((speed * direction) + (kp * error));
         }
         leftBack.setPower(0);
         leftFront.setPower(0);
@@ -397,11 +403,12 @@ public class Robot extends SampleMecanumDrive {
         rightFront.setPower(0);
     }
 
-    public void strafeOdoEncoder(double direction, double speed, double distance, boolean encoderReset){
+    public void strafeOdoEncoder(double direction, double speed, double distance, double kp, boolean encoderReset){
         if(encoderReset){
             centerOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
         while(centerOdo.getCurrentPosition() < distance * OdoTicksToInchStrafe){
+
             leftBack.setPower(-speed * direction);
             leftFront.setPower(speed * direction);
             rightBack.setPower(speed * direction);
