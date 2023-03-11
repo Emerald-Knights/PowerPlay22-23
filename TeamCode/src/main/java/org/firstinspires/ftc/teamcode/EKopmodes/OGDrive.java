@@ -33,10 +33,10 @@ public class OGDrive extends LinearOpMode {
             rx = gamepad1.right_stick_x;
             ly = gamepad1.left_stick_y;
             // arithmetic to get motor values - not scaled
-            double lf = ly - rx - lx;
-            double lb = ly - rx + lx;
-            double rf = ly + rx + lx;
-            double rb = ly + rx - lx;
+            double lf = -ly + rx + lx;
+            double lb = -ly + rx - lx;
+            double rf = -ly - rx - lx;
+            double rb = -ly - rx + lx;
             // scale the motor values
             double ratio;
             double max = Math.max(Math.max(Math.abs(lb), Math.abs(lf)), Math.max(Math.abs(rb), Math.abs(rf)));
@@ -48,10 +48,10 @@ public class OGDrive extends LinearOpMode {
             }
             // sets the motor power
             if (magnitude > 0.05) {
-                bot.leftFront.setPower(lf * ratio*0.6);
-                bot.leftBack.setPower(lb * ratio*0.6);
-                bot.rightFront.setPower(rf * ratio*0.6);
-                bot.rightBack.setPower(rb * ratio*0.6);
+                bot.leftFront.setPower(lf * ratio*0.5);
+                bot.leftBack.setPower(lb * ratio*0.5);
+                bot.rightFront.setPower(rf * ratio*0.5);
+                bot.rightBack.setPower(rb * ratio*0.5);
             }
             else{
                 bot.leftFront.setPower(0);

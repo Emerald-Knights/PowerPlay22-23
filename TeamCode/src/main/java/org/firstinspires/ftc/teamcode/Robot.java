@@ -79,6 +79,13 @@ public class Robot extends SampleMecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
+        //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        //rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         neck = hardwareMap.get(Servo.class, "neck");
@@ -147,8 +154,8 @@ public class Robot extends SampleMecanumDrive {
             leftClaw.setPosition(0.68);
         } else {
             //closed position
-            rightClaw.setPosition(0.50);
-            leftClaw.setPosition(0.85);
+            rightClaw.setPosition(0.45);
+            leftClaw.setPosition(0.90);
         }
         clawClosed = !clawClosed;
     }
