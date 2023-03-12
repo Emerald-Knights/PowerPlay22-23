@@ -29,9 +29,9 @@ public class OGDrive extends LinearOpMode {
         while (opModeIsActive()) {
             //drive
             // set the gamepad variables
-            lx = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-            ly = gamepad1.left_stick_y;
+            lx = -gamepad1.left_stick_x;
+            rx = -gamepad1.right_stick_x;
+            ly = -gamepad1.left_stick_y;
             // arithmetic to get motor values - not scaled
             double lf = ly - rx - lx;
             double lb = ly - rx + lx;
@@ -77,7 +77,11 @@ public class OGDrive extends LinearOpMode {
 //            telemetry.addData("right:", bot.rightOdo.getCurrentPosition());
 //            telemetry.addData("center:", bot.centerOdo.getCurrentPosition());
 //            telemetry.addData("slidePower", bot.slide.getPower());
-            telemetry.addData("heading", bot.imu.getAngularOrientation().firstAngle);
+
+
+            bot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            telemetry.addData("lb", bot.leftBack.getCurrentPosition());
+            telemetry.update();
 //            telemetry.addData("anglewrapped", bot.)
 
             telemetry.update();

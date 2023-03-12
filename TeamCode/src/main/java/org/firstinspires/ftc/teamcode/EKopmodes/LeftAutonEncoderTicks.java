@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.camera.DetectorPipeline;
 import org.firstinspires.ftc.teamcode.camera.LocalizationPipeline;
 
-@Autonomous(name="RightAutonEncoderTicks", group="auto")
-public class RightAutonEncoderTicks extends LinearOpMode {
+@Autonomous(name="LeftAutonEncoderTicks", group="auto")
+public class LeftAutonEncoderTicks extends LinearOpMode {
 
     Robot wucru;
 
@@ -36,7 +36,7 @@ public class RightAutonEncoderTicks extends LinearOpMode {
         //pick up preloaded cone
         wucru.moveNeck();
         wucru.moveClaw();
-        sleep(500);
+        sleep(1000);
 
         //start lifting slide
         wucru.slide.setTargetPosition(117 * 38);
@@ -111,13 +111,13 @@ public class RightAutonEncoderTicks extends LinearOpMode {
         //go to junction for 2nd cycle
         wucru.straightOneOdo(-1, 0.4, 22, wucru.imu.getAngularOrientation().firstAngle, 0, true);
 
-        //rotate to junction
+        //rotate to junction second time
         wucru.moveNeck();
-        wucru.turnTo(-3*Math.PI/4, 0.3);
-        wucru.straightOneOdo(-1, 0.3, 9, -3*Math.PI/4, 0.03, true);
+        wucru.turnTo(-3*Math.PI/4 + 0.05, 0.3);
+        wucru.straightOneOdo(-1, 0.3, 5, -3*Math.PI/4, 0.03, true);
         sleep(1500);
 
-        //drop cone
+        //drop cone second time
         wucru.slide.setTargetPosition(117 * 28);
         wucru.slide.setPower(-0.5);
         sleep(1000);
@@ -131,12 +131,16 @@ public class RightAutonEncoderTicks extends LinearOpMode {
         wucru.straightOneOdo(1, 0.3, 7, -3*Math.PI/4, 0.03, true);
         wucru.turnTo(-Math.PI/2, 0.5);
 //        park
-        if(DetectorPipeline.sleeveColor == 3){
-            wucru.straightOneOdo(-1, 0.5, 10, -Math.PI/2, 0.03, true);
-        }
-        else if (DetectorPipeline.sleeveColor == 1){
-            wucru.straightOneOdo(1, 0.5, 10, -Math.PI/2, 0.03, true);
-        }
+
+        //temporary park testing
+//        DetectorPipeline.sleeveColor = 3;
+
+//        if(DetectorPipeline.sleeveColor == 3){
+            wucru.straightOneOdo(-1, 0.5, 5, -Math.PI/2, 0.03, true);
+//        }
+//        else if (DetectorPipeline.sleeveColor == 1){
+//            wucru.straightOneOdo(1, 0.5, 11, -Math.PI/2, 0.03, true);
+//        }
 
         telemetry.update();
 

@@ -25,6 +25,7 @@ public class TestCameraLocalization extends LinearOpMode {
             telemetry.addData("Pixels Off From Center", test.pixelsOffCenter);
             telemetry.addData("Distance", distance);
             telemetry.addData("Angle", angle);
+            telemetry.addData("x", (distance - 4) * Math.tan(angle));
             telemetry.addData("Position", ("(" + distance + ", " + (distance * Math.tan(angle)) + ")"));
             telemetry.update();
         }

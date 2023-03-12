@@ -50,11 +50,13 @@ public class Robot extends SampleMecanumDrive {
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
-    public Encoder leftOdo, centerOdo, rightOdo;
+    public Encoder centerOdo, rightOdo;
 
     public final int DIRECTION = 1;
     final static double TICKS_TO_INCH_FORWARD = 0.0265;
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
+
+    final static double lbTickstoInch = 63;
     final static double ticksToInchSlide = 116.67;
 
     final static double OdoTicksToInchStraight = -467.5;
@@ -71,14 +73,14 @@ public class Robot extends SampleMecanumDrive {
 
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
         super(hardwareMap);
-        leftOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "leftOdo"));
+//        leftOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "leftOdo"));
         centerOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "centerOdo"));
         rightOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "rightOdo"));
-        leftOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        leftOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         centerOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftOdo.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+//        leftOdo.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightOdo.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -104,6 +106,7 @@ public class Robot extends SampleMecanumDrive {
         currentAngle = imu.getAngularOrientation();
         this.linearOpMode = linearOpMode;
         this.hardwareMap = hardwareMap;
+        telemetry = linearOpMode.telemetry;
         timer = new ElapsedTime();
 
         //add slide data points: slideZeroPower.add();
@@ -153,8 +156,8 @@ public class Robot extends SampleMecanumDrive {
             leftClaw.setPosition(0.68);
         } else {
             //closed position
-            rightClaw.setPosition(0.50);
-            leftClaw.setPosition(0.85);
+            rightClaw.setPosition(0.44);
+            leftClaw.setPosition(0.95);
         }
         clawClosed = !clawClosed;
     }
@@ -243,8 +246,6 @@ public class Robot extends SampleMecanumDrive {
         leftFront.setPower(0);
         rightBack.setPower(0);
         rightFront.setPower(0);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //1 is straight -1 is back
@@ -261,8 +262,6 @@ public class Robot extends SampleMecanumDrive {
         leftFront.setPower(0);
         rightBack.setPower(0);
         rightFront.setPower(0);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void straightWtime(double direction, double speed, double time) {
@@ -306,14 +305,16 @@ public class Robot extends SampleMecanumDrive {
             leftFront.setPower(speed * direction);
             rightBack.setPower(-speed * direction);
             rightFront.setPower(-speed * direction);
-
+            telemetry.addData("lb", leftBack.getPower());
+            telemetry.addData("lf", leftFront.getPower());
+            telemetry.addData("rb", rightBack.getPower());
+            telemetry.addData("rf", rightFront.getPower());
+            telemetry.update();
         }
         leftBack.setPower(0);
         leftFront.setPower(0);
         rightBack.setPower(0);
         rightFront.setPower(0);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void turnTo(double targetAngle, double speed, int direction) {
@@ -328,8 +329,6 @@ public class Robot extends SampleMecanumDrive {
         leftFront.setPower(0);
         rightBack.setPower(0);
         rightFront.setPower(0);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setSlidePosition(int height) {
@@ -385,13 +384,12 @@ public class Robot extends SampleMecanumDrive {
     public void straightOneOdo(int direction, double speed, double inchesDistance, double targetAngle, double kp, boolean resetEncoder) {
         //forward is negative, back is positive
         //if resetEncoder == true, reset encoder before moving
-        if (resetEncoder) {
-            rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightOdo.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+        rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightOdo.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        double initialPos = rightOdo.motor.getCurrentPosition();
 
-        while (Math.abs(rightOdo.getCurrentPosition()) < Math.abs((inchesDistance * OdoTicksToInchStraight))){
-            double error = targetAngle - imu.getAngularOrientation().firstAngle;
+        while (Math.abs(rightOdo.motor.getCurrentPosition()) < Math.abs((inchesDistance * OdoTicksToInchStraight))){
+            double error = -(targetAngle - imu.getAngularOrientation().firstAngle);
             leftBack.setPower((speed * direction) - (kp * error));
             leftFront.setPower((speed * direction) - (kp * error));
             rightBack.setPower((speed * direction) + (kp * error));
@@ -403,21 +401,27 @@ public class Robot extends SampleMecanumDrive {
         rightFront.setPower(0);
     }
 
-    public void strafeOdoEncoder(double direction, double speed, double distance, double kp, boolean encoderReset){
-        if(encoderReset){
-            centerOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
-        while(centerOdo.getCurrentPosition() < distance * OdoTicksToInchStrafe){
-
-            leftBack.setPower(-speed * direction);
-            leftFront.setPower(speed * direction);
-            rightBack.setPower(speed * direction);
-            rightFront.setPower(-speed * direction);
-        }
-        leftBack.setPower(0);
-        leftFront.setPower(0);
-        rightBack.setPower(0);
-        rightFront.setPower(0);
-    }
+//    public void lbEncoderStrafe(double distance, double speed){
+//        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        while (Math.abs(rightBack.getCurrentPosition()) < Math.abs(distance * lbTickstoInch)) {
+//            leftBack.setPower(-speed);
+//            leftFront.setPower(speed);
+//            rightBack.setPower(speed);
+//            rightFront.setPower(-speed);
+//        }
+//        leftBack.setPower(0);
+//        leftFront.setPower(0);
+//        rightBack.setPower(0);
+//        rightFront.setPower(0);
+//        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//    }
 }
 
