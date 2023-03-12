@@ -114,7 +114,7 @@ public class LeftAutonEncoderTicks extends LinearOpMode {
         //rotate to junction second time
         wucru.moveNeck();
         wucru.turnTo(-3*Math.PI/4 + 0.05, 0.3);
-        wucru.straightOneOdo(-1, 0.3, 5, -3*Math.PI/4, 0.03, true);
+        wucru.straightOneOdo(-1, 0.3, 4, -3*Math.PI/4, 0.03, true);
         sleep(1500);
 
         //drop cone second time
@@ -133,14 +133,16 @@ public class LeftAutonEncoderTicks extends LinearOpMode {
 //        park
 
         //temporary park testing
-//        DetectorPipeline.sleeveColor = 3;
+        DetectorPipeline.sleeveColor = 3;
 
-//        if(DetectorPipeline.sleeveColor == 3){
-            wucru.straightOneOdo(-1, 0.5, 5, -Math.PI/2, 0.03, true);
-//        }
-//        else if (DetectorPipeline.sleeveColor == 1){
+        if(DetectorPipeline.sleeveColor == 3){
+//            wucru.straightOneOdo(-1, 0.5, 5, -Math.PI/2, 0.03, true);
+            wucru.straightWtime(-1, 0.5, 1);
+        }
+        else if (DetectorPipeline.sleeveColor == 1){
 //            wucru.straightOneOdo(1, 0.5, 11, -Math.PI/2, 0.03, true);
-//        }
+            wucru.straightWtime(1, 0.5, 1);
+        }
 
         telemetry.update();
 
