@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
-@TeleOp (name = "DazzlingIdealCapableKnowledgeableSoftware")
+@TeleOp (name = "DriveSLOWMODE")
 public class OGDrive extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -18,14 +18,28 @@ public class OGDrive extends LinearOpMode {
         waitForStart();
 
         double lx, rx, ly; // intialize variables for the gamepad
+        boolean clawClosed = false;
+        boolean neckUp = false;
+        double slowmode = 0.5;
         boolean lateA = false;
         boolean lateB = false;
-        boolean lateDdown = false;
-        boolean lateDleft = false;
-        boolean lateDright = false;
-        boolean lateDup = false;
         boolean lateX = false;
-        bot.slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        boolean turned = false;
+
+        double kp = 1;
+        double ki = 0;
+        double kd = 0.1;
+
+        double targetAngle = 0;
+        double cycleTime = 0;
+
+        double error = 0;
+        double prevError = 0;
+        double iGain = 0;
+        double pGain = 1;
+        double dGain = 0;
+        bot.timer.reset();
+//        bot.slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (opModeIsActive()) {
             //drive
             // set the gamepad variables
@@ -46,12 +60,41 @@ public class OGDrive extends LinearOpMode {
             } else {
                 ratio = magnitude / max;
             }
-            // sets the motor power
-            if (magnitude > 0.05) {
-                bot.leftFront.setPower(lf * ratio*0.6);
-                bot.leftBack.setPower(lb * ratio*0.6);
-                bot.rightFront.setPower(rf * ratio*0.6);
-                bot.rightBack.setPower(rb * ratio*0.6);
+
+
+            //calculate cycle time
+            cycleTime = bot.timer.milliseconds();
+            bot.timer.reset();
+
+            if (magnitude > 0.03) {
+                if(Math.abs(rx) <= 0.03) {
+                    //PID algo if it's not turning
+                    if(turned){
+                        //if it turned, recalibrate the target angle
+                        targetAngle = bot.imu.getAngularOrientation().firstAngle;
+                        turned = false;
+                    }
+                    error = targetAngle - bot.imu.getAngularOrientation().firstAngle;
+                    iGain += ki * error * cycleTime;
+                    dGain = kd * (error - prevError)/cycleTime;
+                    pGain = kp * error;
+                    prevError = error;
+
+                    bot.leftFront.setPower((lf * ratio * 0.8 * slowmode) - (pGain + dGain + iGain));
+                    bot.leftBack.setPower((lb * ratio * 0.8 * slowmode) - (pGain + dGain + iGain));
+                    bot.rightFront.setPower((rf * ratio * 0.8 * slowmode) + (pGain + dGain + iGain));
+                    bot.rightBack.setPower((rb * ratio * 0.8 * slowmode) + (pGain + dGain + iGain));
+                }
+                else{
+                    //regular algo if it's turning
+                    turned = true;
+                    prevError = 0;
+
+                    bot.leftFront.setPower((lf * ratio * 0.8 * slowmode));
+                    bot.leftBack.setPower((lb * ratio * 0.8 * slowmode));
+                    bot.rightFront.setPower((rf * ratio * 0.8 * slowmode));
+                    bot.rightBack.setPower((rb * ratio * 0.8 * slowmode));
+                }
             }
             else{
                 bot.leftFront.setPower(0);
@@ -59,46 +102,47 @@ public class OGDrive extends LinearOpMode {
                 bot.rightFront.setPower(0);
                 bot.rightBack.setPower(0);
             }
-//            //telemetry.addData("lb encoder:", bot.leftBack.getCurrentPosition());
-//            telemetry.addData("RF: ", bot.rightFront.getPower());
-//            telemetry.addData("RB: ", bot.rightBack.getPower());
-//            telemetry.addData("LF: ", bot.leftFront.getPower());
-//            telemetry.addData("LB: ", bot.leftBack.getPower());
-//
-//
-//            telemetry.addData("slideEncoder: ", bot.slide.getCurrentPosition());
-//            //bottom: 0: top around 4181  mid:2985 bottom:1679
-//            telemetry.addData("y val:", gamepad1.left_stick_y);
-//            telemetry.addData("lb:",lb);
-//            telemetry.addData("lf",lf);
-//            telemetry.addData("rf",rf);
-//            telemetry.addData("rb",rb);
-//            telemetry.addData("left:", bot.leftOdo.getCurrentPosition());
-//            telemetry.addData("right:", bot.rightOdo.getCurrentPosition());
-//            telemetry.addData("center:", bot.centerOdo.getCurrentPosition());
-//            telemetry.addData("slidePower", bot.slide.getPower());
+            if(gamepad1.a && !lateA) {
+                if (clawClosed) {
+                    //open position
+                    bot.rightClaw.setPosition(0.4);
+                    bot.leftClaw.setPosition(0.2);
+                    clawClosed=false;
 
+                } else {
+                    //closed position
+                    bot.rightClaw.setPosition(0.1);
+                    bot.leftClaw.setPosition(0.5);
+                    clawClosed=true;
 
-            bot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            telemetry.addData("lb", bot.leftBack.getCurrentPosition());
-            telemetry.update();
-//            telemetry.addData("anglewrapped", bot.)
-
-            telemetry.update();
-            bot.setSlidePower((gamepad2.right_trigger - gamepad2.left_trigger) * 0.8);
-            if (gamepad2.a && !lateA){
-                bot.moveClaw();
+                }
             }
-            if (gamepad2.b && !lateB) {
-                bot.moveNeck();
+
+            if(gamepad1.b && !lateB){
+                if (neckUp) {
+                    //open position
+                    bot.arm.setPosition(1);
+                    neckUp=false;
+                }
+                else {
+                    //closed position
+                    bot.arm.setPosition(0.75);
+                    neckUp=true;
+                }
             }
-            lateB = gamepad2.b;
-            lateA = gamepad2.a;
+
+            if(gamepad2.x && !lateX){
+                if(slowmode == 0.5){
+                    slowmode = 1;
+                }
+                else{
+                    slowmode = 0.5;
+                }
+            }
+
+            lateA = gamepad1.a;
+            lateB = gamepad1.b;
             lateX = gamepad2.x;
-            lateDdown = gamepad2.dpad_down;
-            lateDleft = gamepad2.dpad_left;
-            lateDright = gamepad2.dpad_right;
-            lateDup = gamepad2.dpad_up;
 
 
         }

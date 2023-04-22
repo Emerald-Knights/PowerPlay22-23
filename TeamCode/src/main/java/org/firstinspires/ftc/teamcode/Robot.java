@@ -27,77 +27,42 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class Robot extends SampleMecanumDrive {
-
-    public boolean RUN_USING_ENCODER;
-    private boolean clawClosed = false;
-    private boolean neckFront = false;
-    private boolean rnpUp = false;
-
+public class Robot {
     public DcMotorEx leftBack, leftFront, rightBack, rightFront;
-    DcMotor test;
-    public Servo leftClaw;
-    public Servo rightClaw;
-    public Servo neck;
-    public DcMotor slide;
+    public Servo leftClaw, rightClaw, arm;
 
     public DistanceSensor distance;
     public BNO055IMU imu;
     Orientation currentAngle;
-    ElapsedTime timer;
+    public ElapsedTime timer;
 
     LinearOpMode linearOpMode;
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
-    public Encoder centerOdo, rightOdo;
-
-    public final int DIRECTION = 1;
     final static double TICKS_TO_INCH_FORWARD = 0.0265;
     final static double TICKS_TO_INCH_STRAFE = 0.01975;
 
-    final static double lbTickstoInch = 63;
-    final static double ticksToInchSlide = 116.67;
-
-    final static double OdoTicksToInchStraight = -467.5;
-    final static double OdoTicksToInchStrafe = 467.2;
-
-
-    //theoretical ticks to inch 32.7404454359 (360 / circumference of the wheel)
-
-    public int[] slidePosition = new int[3];
-    public int[] levels = new int[]{0, 1800, 3019, 4240};
-    InterpLUT slideZeroPower = new InterpLUT();
 
     public OpenCvWebcam webcam;
 
     public Robot(HardwareMap hardwareMap, LinearOpMode linearOpMode) {
-        super(hardwareMap);
-//        leftOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "leftOdo"));
-        centerOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "centerOdo"));
-        rightOdo = new Encoder(hardwareMap.get(DcMotorEx.class, "rightOdo"));
-//        leftOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        centerOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-//        leftOdo.motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightOdo.motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-
-        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        neck = hardwareMap.get(Servo.class, "neck");
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        arm = hardwareMap.get(Servo.class, "arm");
 
-        distance = hardwareMap.get(DistanceSensor.class, "distance");
-        slide = hardwareMap.get(DcMotor.class, "slide");
-        slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slide.setDirection(DcMotorSimple.Direction.REVERSE);
-        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slide.setTargetPosition(0);
-        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -108,10 +73,6 @@ public class Robot extends SampleMecanumDrive {
         this.hardwareMap = hardwareMap;
         telemetry = linearOpMode.telemetry;
         timer = new ElapsedTime();
-
-        //add slide data points: slideZeroPower.add();
-
-        //slideZeroPower.createLUT();
     }
 
 
@@ -145,39 +106,9 @@ public class Robot extends SampleMecanumDrive {
         double dist = distance.getDistance(DistanceUnit.INCH);
         double x = dist;
         double y = dist * LocalizationPipeline.RAD_PER_PIXEL;
-        setPoseEstimate(new Pose2d(x, y, imu.getAngularOrientation().firstAngle));
+//        setPoseEstimate(new Pose2d(x, y, imu.getAngularOrientation().firstAngle));
     }
 
-    //teleop methods
-    public void moveClaw() {
-        if (clawClosed) {
-            //open position
-            rightClaw.setPosition(0.64);
-            leftClaw.setPosition(0.68);
-        } else {
-            //closed position
-            rightClaw.setPosition(0.44);
-            leftClaw.setPosition(0.95);
-        }
-        clawClosed = !clawClosed;
-    }
-
-    public void moveNeck() {
-        if (neckFront) {
-            //back positoin
-            neck.setPosition(1);
-        } else {
-            neck.setPosition(0.15);
-        }
-        neckFront = !neckFront;
-    }
-
-
-    public void overextendClaw() {
-        rightClaw.setPosition(0.7);
-        leftClaw.setPosition(0);
-        clawClosed = false;
-    }
 
     //auton methods
     public static double angleCompare(double angle1, double angle2) {
@@ -331,75 +262,75 @@ public class Robot extends SampleMecanumDrive {
         rightFront.setPower(0);
     }
 
-    public void setSlidePosition(int height) {
-        slide.setTargetPosition(height);
-    }
+//    public void setSlidePosition(int height) {
+//        slide.setTargetPosition(height);
+//    }
+//
+//    public void setSlidePower(double power) {
+//        if (power == 0) {
+//            slide.setPower(slide.getCurrentPosition() / 1000000.0);
+//        } else slide.setPower(power);
+//    }
+//
+//    public void moveSlide(double distance, double power) {
+//        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        while (Math.abs(slide.getCurrentPosition()) < Math.abs(distance * ticksToInchSlide)) {
+//            slide.setPower(power);
+//        }
+//        slide.setPower(0);
+//    }
+//
+//    public void switchSlideMode() {
+//        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//    }
+//
+//    //bottom: 0: top around 4181  mid:2985 bottom:1679
+//    public void goToJunction(int level) {
+//        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        slide.setTargetPosition(levels[level]);
+//        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//    }
 
-    public void setSlidePower(double power) {
-        if (power == 0) {
-            slide.setPower(slide.getCurrentPosition() / 1000000.0);
-        } else slide.setPower(power);
-    }
-
-    public void moveSlide(double distance, double power) {
-        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while(Math.abs(slide.getCurrentPosition()) < Math.abs(distance * ticksToInchSlide)) {
-            slide.setPower(power);
-        }
-        slide.setPower(0);
-    }
-
-    public void switchSlideMode() {
-        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    //bottom: 0: top around 4181  mid:2985 bottom:1679
-    public void goToJunction(int level) {
-        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slide.setTargetPosition(levels[level]);
-        slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    }
-
-    public void turnToJunction() {
-        double fx = Math.floor(getPoseEstimate().getX() / 24) * 24;
-        double fy = Math.floor(getPoseEstimate().getY() / 24) * 24;
-        double cx = Math.ceil(getPoseEstimate().getX() / 24) * 24;
-        double cy = Math.floor(getPoseEstimate().getY() / 24) * 24;
-        double minAngle = Math.atan2(fx, fy);
-        double minDiff = Math.abs(getPoseEstimate().getHeading() - minAngle);
-        if (Math.abs(Math.atan2(cx, fy) - getPoseEstimate().getHeading()) < minDiff) {
-            minAngle = Math.atan2(cx, fy);
-        } else if (Math.abs(Math.atan2(fx, cy) - getPoseEstimate().getHeading()) < minDiff) {
-            minAngle = Math.atan2(cx, fy);
-        } else if (Math.abs(Math.atan2(cx, cy) - getPoseEstimate().getHeading()) < minDiff) {
-            minAngle = Math.atan2(cx, cy);
-        }
-        turnTo(minAngle, 0.8);
-    }
+//    public void turnToJunction() {
+//        double fx = Math.floor(getPoseEstimate().getX() / 24) * 24;
+//        double fy = Math.floor(getPoseEstimate().getY() / 24) * 24;
+//        double cx = Math.ceil(getPoseEstimate().getX() / 24) * 24;
+//        double cy = Math.floor(getPoseEstimate().getY() / 24) * 24;
+//        double minAngle = Math.atan2(fx, fy);
+//        double minDiff = Math.abs(getPoseEstimate().getHeading() - minAngle);
+//        if (Math.abs(Math.atan2(cx, fy) - getPoseEstimate().getHeading()) < minDiff) {
+//            minAngle = Math.atan2(cx, fy);
+//        } else if (Math.abs(Math.atan2(fx, cy) - getPoseEstimate().getHeading()) < minDiff) {
+//            minAngle = Math.atan2(cx, fy);
+//        } else if (Math.abs(Math.atan2(cx, cy) - getPoseEstimate().getHeading()) < minDiff) {
+//            minAngle = Math.atan2(cx, cy);
+//        }
+//        turnTo(minAngle, 0.8);
+//    }
 
 
     //new auton methods
 
-    public void straightOneOdo(int direction, double speed, double inchesDistance, double targetAngle, double kp, boolean resetEncoder) {
+//    public void straightOneOdo(int direction, double speed, double inchesDistance, double targetAngle, double kp, boolean resetEncoder) {
         //forward is negative, back is positive
         //if resetEncoder == true, reset encoder before moving
-        rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightOdo.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightOdo.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        double initialPos = rightOdo.motor.getCurrentPosition();
 
-        while (Math.abs(rightOdo.motor.getCurrentPosition()) < Math.abs((inchesDistance * OdoTicksToInchStraight))){
-            double error = -(targetAngle - imu.getAngularOrientation().firstAngle);
-            leftBack.setPower((speed * direction) - (kp * error));
-            leftFront.setPower((speed * direction) - (kp * error));
-            rightBack.setPower((speed * direction) + (kp * error));
-            rightFront.setPower((speed * direction) + (kp * error));
-        }
-        leftBack.setPower(0);
-        leftFront.setPower(0);
-        rightBack.setPower(0);
-        rightFront.setPower(0);
-    }
+//        while (Math.abs(rightOdo.motor.getCurrentPosition()) < Math.abs((inchesDistance * OdoTicksToInchStraight))) {
+//            double error = -(targetAngle - imu.getAngularOrientation().firstAngle);
+//            leftBack.setPower((speed * direction) - (kp * error));
+//            leftFront.setPower((speed * direction) - (kp * error));
+//            rightBack.setPower((speed * direction) + (kp * error));
+//            rightFront.setPower((speed * direction) + (kp * error));
+//        }
+//        leftBack.setPower(0);
+//        leftFront.setPower(0);
+//        rightBack.setPower(0);
+//        rightFront.setPower(0);
+//    }
 
 //    public void lbEncoderStrafe(double distance, double speed){
 //        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -423,5 +354,25 @@ public class Robot extends SampleMecanumDrive {
 //        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //    }
-}
 
+//
+//    public void straightPID(double speed, double inchesDistance, double targetAngle, double kp, boolean resetEncoder) {
+//        //forward is negative, back is positive
+//        //if resetEncoder == true, reset encoder before moving
+//        rightOdo.motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rightOdo.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+////        double initialPos = rightOdo.motor.getCurrentPosition();
+//
+//        while (Math.abs(rightOdo.motor.getCurrentPosition()) < Math.abs((inchesDistance * OdoTicksToInchStraight))) {
+//            double error = -(targetAngle - imu.getAngularOrientation().firstAngle);
+//            leftBack.setPower((speed) - (kp * error));
+//            leftFront.setPower((speed) - (kp * error));
+//            rightBack.setPower((speed) + (kp * error));
+//            rightFront.setPower((speed) + (kp * error));
+//        }
+//        leftBack.setPower(0);
+//        leftFront.setPower(0);
+//        rightBack.setPower(0);
+//        rightFront.setPower(0);
+//    }
+}
